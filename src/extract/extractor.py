@@ -1,10 +1,15 @@
+# scr/extract/extractor.py
+
 import pandas as pd
 from datetime import datetime
 import boto3
 import os
 
 def lambda_handler(event, context): 
-
+    """
+    Função para captura dos dados csv do https://www.tesourotransparente.gov.br/
+    """
+    
     try:
 
         # Captura o momentoe exato de extração do arquivo csv

@@ -1,0 +1,9 @@
+# src/config/settings.yaml
+
+spark:
+  app_name: "Analise Titulos Tesouro Direto"
+
+paths:
+  volume_path_bronze: "/Volumes/tesouro_transparente_pipeline/bronze/raw_data"
+  silver: "`tesouro_transparente_pipeline`.`silver`"
+  gold: "`tesouro_transparente_pipeline`.`gold`"

@@ -1,50 +1,48 @@
 import os
 import sys
 
-# Garante o apontamento exato para a pasta do projeto
+# Garante o apontamento exato para a pasta do projeto.
 current_dir = os.path.dirname(os.path.abspath(__file__)) if "__file__" in locals() else os.getcwd()
 if current_dir not in sys.path:
     sys.path.append(current_dir)
 
-from session.spark_session import SparkSessionManager
-from extract.validator import EnvironmentValidator
-from pyspark.sql.types import StructType, StructField, StringType, IntegerType, DoubleType, DateType, TimestampType
-from pyspark.sql import Window
-from pyspark.sql import functions as F
+from session.spark_session  import SparkSessionManager
+from extract.validator      import EnvironmentValidator
+from pyspark.sql.types      import StructType, StructField, StringType, IntegerType, DoubleType, DateType, TimestampType
+from pyspark.sql            import Window
+from pyspark.sql            import functions as F
+from config.settings        import carregar_config
+from io_utils.data_handler  import DataHandler
 
-# Captura a sessão spark
+# Captura a sessão spark.
 spark = SparkSessionManager.get_spark_session()
 
-# Parâmetros estruturados
-catalog_name = 'tesouro_transparente_pipeline'
-volume_path_bronze = f'/Volumes/{catalog_name}/bronze/raw_data/'
-schema_silver = f'`{catalog_name}`.`silver`'
-schema_gold = f'`{catalog_name}`.`gold`'
+# Carrega configurações externalizadas.
+config = carregar_config()
 
+# Cria uma instância da classe DataHandler
+dh = DataHandler(spark)
+
+# Obtendo os caminhos
+volume_path_bronze = config['paths']['volume_path_bronze']
+schema_silver      = config['paths']['silver']
+schema_gold        = config['paths']['gold']
+
+print(f"""
+      Obtido os seugintes paths:
+      bronze =  {volume_path_bronze}
+      silver =  {schema_silver}
+      gold   =  {schema_gold}
+      """)
 
 # Valida a existência e configuração do ambiente, tanto a leitura dos arquivos quanto os schemas para gravação
 print('Iniciando validação do ambiente...')
 EnvironmentValidator.validate_volume_path(volume_path_bronze)
 
-# Definição do schema
-schema_tesouro_transparente = StructType([
-    StructField('Tipo Titulo', StringType(), True),
-    StructField('Data Vencimento', StringType(), True),
-    StructField('Data Base', StringType(), True),
-    StructField('Taxa Compra Manha', DoubleType(), True),
-    StructField('Taxa Venda Manha', DoubleType(), True),
-    StructField('PU Compra Manha', DoubleType(), True),
-    StructField('PU Venda Manha', DoubleType(), True),
-    StructField('PU Base Manha', DoubleType(), True)
-])
-
 # Leitura dos arquivos na camada bronze
 print(f'Lendo dados Parquet de: {volume_path_bronze}')
-tesouro_transparente_bronze = (
-    spark.read.format("parquet")
-    .schema(schema_tesouro_transparente)
-    .load(volume_path_bronze)
-)
+
+tesouro_transparente_bronze = dh.load_tesouro_transparente(path = volume_path_bronze)
 
 print(f'Total de registros na camada Bronze: {tesouro_transparente_bronze.count()}')
 
@@ -73,10 +71,8 @@ tesouro_transparente_silver = (
 )
 
 # Salvando o dataframe na camada silver, em delta tables
-tesouro_transparente_silver.write \
-    .format('delta') \
-    .mode('overwrite') \
-    .saveAsTable(schema_silver + '.`tesouro_transparente_silver`')
+print("Salvando a tabela tesouro_transparente_silver...")
+dh.write_delta(df = tesouro_transparente_silver, path = schema_silver, table_name = 'tesouro_transparente_silver')
 
 # Criando as tabelas analíticas
 # Dim Titulo
@@ -110,10 +106,8 @@ dim_titulo = (
     .select('id_titulo', 'tipo_titulo', 'data_vencimento', 'ano_vencimento', 'indexador')
 )
 
-dim_titulo.write \
-    .format('delta') \
-    .mode('overwrite') \
-    .saveAsTable(schema_gold + '.`dim_titulo`')
+print("Salvando a tabela dim_titulo...")
+dh.write_delta(df = dim_titulo, path = schema_gold, table_name = 'dim_titulo')
 
 # tabela fato fct_precos_taxas
 fct_precos_taxas = (
@@ -146,18 +140,14 @@ fct_precos_taxas = (
     )
 )
 
-(
-    fct_precos_taxas.write
-    .format('delta')
-    .mode('overwrite')
-    .option('overwriteSchema', 'true')
-    .saveAsTable(schema_gold + '.`fct_precos_taxas`')
-)
+print("Salvando a tabela fct_precos_taxas...")
+dh.write_delta(df = fct_precos_taxas, path = schema_gold, table_name = 'fct_precos_taxas')
 
 # Função para salvar na camada gold
 
 # I/O
 
+"""
 def salvar_gold(df, nome):
     (
         df.write
@@ -168,10 +158,11 @@ def salvar_gold(df, nome):
     )
     total = spark.table(f'{schema_gold}.`{nome}`').count()
     print(f'gold.{nome} gravada: {total} linhas')
+"""
 
 # Base de trabalho (zero cupom)
-fct = spark.table(f'{schema_gold}.`fct_precos_taxas`')
-dim_t = spark.table(f'{schema_gold}.`dim_titulo`')
+fct = dh.load_silver_or_gold(path = schema_gold, table_name = 'fct_precos_taxas')
+dim_t = dh.load_silver_or_gold(path = schema_gold, table_name = 'dim_titulo')
 
 base_zc_df = (
     fct
@@ -187,16 +178,10 @@ base_zc_df = (
     .dropDuplicates(['id_titulo', 'data_base'])
 )
 
-# substitui o cache(): materializa em Delta e lê de volta
-(
-    base_zc_df.write
-    .format('delta')
-    .mode('overwrite')
-    .option('overwriteSchema', 'true')
-    .saveAsTable(f"{schema_silver}.`stg_zero_cupom`")
-)
+print("Salvando a tabela stg_zero_cupom...")
+dh.write_delta(df = base_zc_df, path = schema_silver, table_name = 'stg_zero_cupom')
 
-base_zc = spark.table(f"{schema_silver}.`stg_zero_cupom`")
+base_zc = dh.load_silver_or_gold(path = schema_silver, table_name = 'stg_zero_cupom')
 print(f'Base zero cupom: {base_zc.count()} linhas')
 
 # dim_data
@@ -224,7 +209,8 @@ dim_data = (
     .withColumn('flag_fim_de_semana', F.col('dia_semana').isin(1, 7)) 
 )
 
-salvar_gold(dim_data, 'dim_data')
+print("Salvando a tabela dim_data...")
+dh.write_delta(df = dim_data, path = schema_gold, table_name = 'dim_data')
 
 # fct_curva_juros_vertices
 VERTICES_ANOS = [1, 2, 3, 5, 10]
@@ -282,9 +268,10 @@ fct_curva_juros_vertices = (
     .select('data_base', 'familia', 'vertice_anos', 'taxa_vertice', 'dias_lo', 'dias_hi')
 )
 
-salvar_gold(fct_curva_juros_vertices, 'fct_curva_juros_vertices')
+print("Salvando a tabela fct_curva_juros_vertices")
+dh.write_delta(df = fct_curva_juros_vertices, path = schema_gold, table_name = 'fct_curva_juros_vertices')
  
-curva = spark.table(f"{schema_gold}.`fct_curva_juros_vertices`")
+curva = dh.load_silver_or_gold(path = schema_gold, table_name = 'fct_curva_juros_vertices')
 
 # fct_inflacao_implicita - breakeven
 pre = (
@@ -304,7 +291,8 @@ fct_inflacao_implicita = (
     )
 )
 
-salvar_gold(fct_inflacao_implicita, 'fct_inflacao_implicita')
+print("Salvando tabela fct_inflacao_implicita")
+dh.write_delta(df = fct_inflacao_implicita, path = schema_gold, table_name = 'fct_inflacao_implicita')
 
 # fct_risco_titulo
 w_t = Window.partitionBy('id_titulo').orderBy('data_base')
@@ -362,7 +350,8 @@ fct_risco_titulo = (
     )
 )
  
-salvar_gold(fct_risco_titulo, 'fct_risco_titulo')
+print("Salvando a tablea fct_risco_titulo")
+dh.write_delta(df = fct_risco_titulo, path = schema_gold, table_name = 'fct_risco_titulo')
  
  
 # ------------------------------------------------------------------------------
@@ -417,8 +406,8 @@ fct_sinais_mercado = sinais.withColumn(
      .when(F.col('percentil_5a').isNotNull(), F.lit('Zona intermediária'))
 )
  
-salvar_gold(fct_sinais_mercado, 'fct_sinais_mercado')
- 
+print("Salvando a tabela fct_sinais_mercado...")
+dh.write_delta(df = fct_sinais_mercado, path = schema_gold, table_name = 'fct_sinais_mercado')
  
 # ------------------------------------------------------------------------------
 # 6) fct_inclinacao_curva - formato da curva (2s5s e 2s10s, em bps) e inversão
@@ -439,7 +428,8 @@ fct_inclinacao_curva = (
     .withColumn('inclinacao_2s10s_bps', F.round((F.col('taxa_10a') - F.col('taxa_2a')) * 100, 2))
     .withColumn('flag_curva_invertida_2s5s', F.col('inclinacao_2s5s_bps') < 0)
 )
- 
-salvar_gold(fct_inclinacao_curva, 'fct_inclinacao_curva')
- 
 
+print("Salvando a tabela fct_inclunacao_curva")
+dh.write_delta(df = fct_inclinacao_curva, path = schema_gold, table_name = 'fct_inclunacao_curva') 
+
+spark.stop()

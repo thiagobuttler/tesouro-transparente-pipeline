@@ -1,9 +1,15 @@
-import os
-from session.spark_session import SparkSessionManager
+# src/extract/validator
 
-spark = SparkSessionManager.get_spark_session()
+import os
+from pyspark.sql import SparkSession
 
 class EnvironmentValidator:
+    """
+    Classe responsável pela validação do ambiente, tanto caminhos de leitura como caminhos de escrita.
+    """
+    
+    def __init__(self, spark: SparkSession):
+        self.spark = spark
 
     @staticmethod
     def validate_volume_path(volume_path: str) -> None:
@@ -23,21 +29,24 @@ class EnvironmentValidator:
         
         print(f"[Pre-Flight Check] Volume validado com sucesso. Arquivos detectados: {len(files)}")
 
-        @staticmethod
-        def validade_schema_exists(spark: spark, catalog_name: str, schema_name: str) -> None:
+    def validate_schema_exists(self, schema_path: str) -> None:
+        current_catalog = spark.catalog.currentCatalog()
 
-                databases = [db.name for db in spark.catalog.listDatabases()]
-                
-                target_schema = f"{catalog_name}.{schema_name}"
+        databases = [
+            f"{current_catalog}.{db.name}"
+            for db in spark.catalog.listDatabases()
+        ]
 
-                schema_exists = any(db == schema_name or db == target_schema for db in databases)
-                if not schema_exists:
+        target_schema = schema_path.replace("`", "")
 
-                    try:
-                        spark.sql(f"DESCRIBE SCHEMA `{catalog_name}`.`{schema_name}`")
-                    except Exception as e:
-                        raise RuntimeError(
-                            f"[Pre-Flight Check] O Schema '{catalog_name}.{schema_name}' não existe no Unity Catalog: {e}"
-                            )
+        schema_exists = any(db == target_schema for db in databases)
 
+        if not schema_exists:
+            try:
+                spark.sql(f"DESCRIBE SCHEMA {schema_path}")
+            except Exception as e:
+                raise RuntimeError(
+                    f"[Pre-Flight Check] Não foi possível acessar "
+                    f"o schema '{schema_path}': {e}"
+                ) from e
             
