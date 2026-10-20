@@ -11,7 +11,7 @@ class Transformation:
     """
 
     def transform_silver(self, df: DataFrame) -> DataFrame:
-        """Renomeia as colunas e converte as colunas de data para o tipo date."""
+        """Padroniza o esquema da camada Silver: renomeia colunas para snake_case e faz o cast de datas string para o tipo date."""
         
         de_para_colunas = {
             'Tipo Titulo': 'tipo_titulo',
@@ -32,7 +32,7 @@ class Transformation:
         )
 
     def create_dim_titulo(self, df: DataFrame) -> DataFrame:
-        """Cria o dataframe dimensão dos títulos do tesouro direto dim_titulo."""
+        """Constrói a tabela dimensão dim_titulo com deduplicação, geração de surrogate key (MD5) e categorização do indexador por tipo de título do Tesouro Direto."""
         return(
             df
             .select('tipo_titulo', 'data_vencimento')
@@ -55,7 +55,7 @@ class Transformation:
         )
 
     def create_fct_precos_taxas(self, df: DataFrame) -> DataFrame:
-        """Cria o dataframe fato fct_precos_taxas."""
+        """Constrói a tabela fato fct_precos_taxas com preços (PU), taxas de compra/venda, spread e prazo até o vencimento por data base."""
         return(
             df
             .withColumn(
@@ -84,7 +84,7 @@ class Transformation:
         )
     
     def create_base_zc_df(self, df: DataFrame, dim_titulo: DataFrame) -> DataFrame:
-        """Cria o dataframe base_zc_df."""
+        """Prepara a base de zero-coupons (Tesouro Prefixado e IPCA+) com cálculo da taxa mid e deduplicação determinística por id_titulo e data base, retendo a cotação de maior PU."""
         return(
             df
             .join(dim_titulo.select('id_titulo', 'tipo_titulo', 'data_vencimento'), 'id_titulo')
@@ -96,8 +96,6 @@ class Transformation:
             )
             .withColumn('taxa_mid', (F.col('taxa_compra_manha') + F.col('taxa_venda_manha')) / 2)
             .filter(F.col('taxa_mid').isNotNull() & F.col('pu_base_manha').isNotNull())
-            # Deduplicação determinística: dropDuplicates descartaria uma das
-            # linhas arbitrariamente; mantém-se a cotação com maior PU da base.
             .withColumn(
                 '_rn',
                 F.row_number().over(
@@ -109,7 +107,7 @@ class Transformation:
         )
 
     def create_dim_data(self, spark: SparkSession, df: DataFrame) -> DataFrame:
-        """Cria o dataframe dimensão dim_data."""
+        """Gera a tabela dimensão temporal dim_data com calendário contínuo entre as datas base mínima e máxima, incluindo flag de dia com cotação e atributos de granularidade temporal (ano, trimestre, mês, ano-mês, dia da semana, fim de semana)."""
         lim = df.agg(
             F.min('data_base').alias('mn'),
             F.max('data_base').alias('mx')
@@ -139,10 +137,8 @@ class Transformation:
         )
 
     def create_fct_juros_vertices(self, spark: SparkSession, df: DataFrame) -> DataFrame:
-        """Cria o dataframe fato fct_curva_juros_vertices."""
+        """Constrói a tabela fato fct_juros_vertices com interpolação linear das taxas em vértices fixos (1, 2, 3, 5 e 10 anos) a partir de títulos zero-coupon, limitando o gap máximo entre títulos vizinhos a 730 dias."""
         VERTICES_ANOS = [1, 2, 3, 5, 10]
-        # Gap máximo de 2 anos entre os títulos que envolvem o vértice; acima disso
-        # a interpolação linear distorce demais a curva (antes eram 1095 dias).
         MAX_GAP_DIAS = 730
 
         vertices = spark.createDataFrame(
@@ -157,8 +153,6 @@ class Transformation:
                 F.col('taxa_mid').alias('taxa')
             )
             .crossJoin(vertices)
-            # Vértice em dias corridos de calendário (data_base + N anos),
-            # em vez da aproximação fixa de 365 dias/ano, que ignora bissextos.
             .withColumn(
                 'vertice_dias',
                 F.expr('datediff(add_months(data_base, vertice_anos * 12), data_base)')
@@ -203,7 +197,7 @@ class Transformation:
         )
 
     def create_fct_inflacao_implicita(self, df: DataFrame) -> DataFrame:
-        """Cria o dataframe fct_inflacao_implicita."""
+        """Calcula a tabela fato fct_inflacao_implicita derivando a expectativa de inflação (Fisher) a partir da diferença entre taxas prefixadas e reais (IPCA+) por vértice e data base."""
         pre = (
             df.filter(F.col('familia') == 'PRE')
             .select('data_base', 'vertice_anos', F.col('taxa_vertice').alias('taxa_pre'))
@@ -222,15 +216,11 @@ class Transformation:
         )
 
     def create_fct_risco_titulo(self, df: DataFrame) -> DataFrame:
-        """Cria dataframe fato fct_risco_titulo."""
+        """Constrói a tabela fato fct_risco_titulo com métricas de risco de mercado por título: duration de Macaulay e modificada, convexidade, DV01, impacto de preço para choque de 100 bps, volatilidade anualizada (21 e 63 dias), retorno diário e drawdown acumulado."""
         w_t = Window.partitionBy('id_titulo').orderBy('data_base')
         w_21 = w_t.rowsBetween(-20, 0)
         w_63 = w_t.rowsBetween(-62, 0)
         w_acum = w_t.rowsBetween(Window.unboundedPreceding, 0)
-
-        # Ano-calendário médio (365,25 dias) considera anos bissextos, em linha
-        # com o cálculo dos vértices por add_months. Para um zero-coupon, a
-        # duration de Macaulay é igual ao prazo em anos (não é aproximação).
         anos = F.col('dias_ate_vencimento') / 365.25
         y = F.col('taxa_mid') / 100.0
 
@@ -240,7 +230,6 @@ class Transformation:
             .withColumn('duration_modificada', F.round(anos / (1 + y), 4))
             .withColumn('convexidade', F.round(anos * (anos + 1) / F.pow(1 + y, 2), 4))
             .withColumn('dv01', F.round(F.col('pu_base_manha') * F.col('duration_modificada') * 0.0001, 6))
-            # aproximação de 2ª ordem: dP/P = -D_mod*dy + 0.5*C*dy^2
             .withColumn(
                 'impacto_pu_alta_100bps_pct',
                 F.round((-F.col('duration_modificada') * 0.01 + 0.5 * F.col('convexidade') * 0.0001) * 100, 4)
@@ -282,7 +271,7 @@ class Transformation:
         )
     
     def create_fct_sinais_mercado(self, df: DataFrame) -> DataFrame:
-        """Cria o dataframe fato fct_sinais_mercado."""
+        """Gera a tabela fato fct_sinais_mercado com sinais quantitativos por família e vértice: variação de 21 dias em bps, z-score e percentil histórico em janelas móveis (1, 3 e 5 anos) e classificação da leitura histórica da taxa."""
         JANELAS = {'1a': 252, '3a': 756, '5a': 1260}
 
         w_serie = Window.partitionBy('familia', 'vertice_anos').orderBy('data_base')
@@ -337,7 +326,7 @@ class Transformation:
         )
 
     def create_fct_inclinacao_curva(self, df: DataFrame) -> DataFrame:
-        """Cria o dataframe fato fct_inclinacao_curva."""
+        """Constrói a tabela fato fct_inclinacao_curva pivotando os vértices em colunas de taxa e calculando inclinações da curva de juros (2s5s e 2s10s em bps) com flag de curva invertida."""
         VERTICES_ANOS = [1, 2, 3, 5, 10]
 
         curva_larga = (
