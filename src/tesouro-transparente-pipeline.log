@@ -1,0 +1,26 @@
+2026-10-23 19:42:36 - config.settings - INFO - Logging configurado com sucesso via YAML.
+2026-10-23 19:42:36 - __main__ - INFO - Iniciando o job: Analise Titulos Tesouro Direto
+2026-10-23 19:42:36 - pipeline.pipeline - INFO - Pipeline iniciado...
+2026-10-23 19:42:36 - pipeline.pipeline - INFO - 
+            Obtido os seguintes paths:
+            bronze =  /Volumes/tesouro_transparente_pipeline/bronze/raw_data
+            silver =  `tesouro_transparente_pipeline`.`silver`
+            gold   =  `tesouro_transparente_pipeline`.`gold`
+            
+2026-10-23 19:42:36 - pipeline.pipeline - INFO - Iniciando validação do ambiente...
+2026-10-23 19:42:37 - pipeline.pipeline - INFO - Lendo dados Parquet de: /Volumes/tesouro_transparente_pipeline/bronze/raw_data
+2026-10-23 19:42:37 - pipeline.pipeline - INFO - Total de registros na camada Bronze: 3716718
+2026-10-23 19:42:37 - pipeline.pipeline - INFO - Salvando a tabela tesouro_transparente_silver...
+2026-10-23 19:42:44 - pipeline.pipeline - INFO - Salvando a tabela dim_titulo...
+2026-10-23 19:42:47 - pipeline.pipeline - INFO - Salvando a tabela fct_precos_taxas...
+2026-10-23 19:42:55 - pipeline.pipeline - INFO - fct_precos_taxas: linhas 3716718
+2026-10-23 19:42:55 - pipeline.pipeline - INFO - Salvando a tabela stg_zero_cupom...
+2026-10-23 19:43:01 - pipeline.pipeline - INFO - Base zero cupom: 47157 linhas
+2026-10-23 19:43:02 - pipeline.pipeline - INFO - Salvando a tabela dim_data...
+2026-10-23 19:43:05 - pipeline.pipeline - INFO - Salvando a tabela fct_curva_juros_vertices
+2026-10-23 19:43:09 - pipeline.pipeline - INFO - Salvando tabela fct_inflacao_implicita
+2026-10-23 19:43:16 - pipeline.pipeline - INFO - Salvando a tabela fct_risco_titulo
+2026-10-23 19:43:19 - pipeline.pipeline - INFO - Salvando a tabela fct_sinais_mercado...
+2026-10-23 19:43:30 - pipeline.pipeline - INFO - Salvando a tabela fct_inclinacao_curva
+2026-10-23 19:43:34 - pipeline.pipeline - INFO - Pipeline concluído com sucesso!
+2026-10-23 19:43:34 - __main__ - INFO - Pipeline finalizado com sucesso!
