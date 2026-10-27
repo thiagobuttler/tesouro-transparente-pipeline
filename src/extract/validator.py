@@ -30,11 +30,11 @@ class EnvironmentValidator:
         print(f"[Pre-Flight Check] Volume validado com sucesso. Arquivos detectados: {len(files)}")
 
     def validate_schema_exists(self, schema_path: str) -> None:
-        current_catalog = spark.catalog.currentCatalog()
+        current_catalog = self.spark.catalog.currentCatalog()
 
         databases = [
             f"{current_catalog}.{db.name}"
-            for db in spark.catalog.listDatabases()
+            for db in self.spark.catalog.listDatabases()
         ]
 
         target_schema = schema_path.replace("`", "")
@@ -43,7 +43,7 @@ class EnvironmentValidator:
 
         if not schema_exists:
             try:
-                spark.sql(f"DESCRIBE SCHEMA {schema_path}")
+                self.spark.sql(f"DESCRIBE SCHEMA {schema_path}")
             except Exception as e:
                 raise RuntimeError(
                     f"[Pre-Flight Check] Não foi possível acessar "
