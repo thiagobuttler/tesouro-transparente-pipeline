@@ -5,6 +5,7 @@ from pyspark.sql import functions as F
 from pyspark.sql import Window
 from pyspark.sql import SparkSession
 
+
 class Transformation:
     """
     Classe que contém as transformações e regras de negócio da aplicação.
@@ -12,316 +13,431 @@ class Transformation:
 
     def transform_silver(self, df: DataFrame) -> DataFrame:
         """Padroniza o esquema da camada Silver: renomeia colunas para snake_case e faz o cast de datas string para o tipo date."""
-        
+
         de_para_colunas = {
-            'Tipo Titulo': 'tipo_titulo',
-            'Data Vencimento': 'data_vencimento',
-            'Data Base': 'data_base',
-            'Taxa Compra Manha': 'taxa_compra_manha',
-            'Taxa Venda Manha': 'taxa_venda_manha',
-            'PU Compra Manha': 'pu_compra_manha',
-            'PU Venda Manha': 'pu_venda_manha',
-            'PU Base Manha': 'pu_base_manha'
+            "Tipo Titulo": "tipo_titulo",
+            "Data Vencimento": "data_vencimento",
+            "Data Base": "data_base",
+            "Taxa Compra Manha": "taxa_compra_manha",
+            "Taxa Venda Manha": "taxa_venda_manha",
+            "PU Compra Manha": "pu_compra_manha",
+            "PU Venda Manha": "pu_venda_manha",
+            "PU Base Manha": "pu_base_manha",
         }
 
-        return(
-            df
-            .withColumnsRenamed(de_para_colunas)
-            .withColumn('data_vencimento', F.to_date('data_vencimento', 'dd/MM/yyyy'))
-            .withColumn('data_base', F.to_date('data_base', 'dd/MM/yyyy'))
+        return (
+            df.withColumnsRenamed(de_para_colunas)
+            .withColumn("data_vencimento", F.to_date("data_vencimento", "dd/MM/yyyy"))
+            .withColumn("data_base", F.to_date("data_base", "dd/MM/yyyy"))
         )
 
     def create_dim_titulo(self, df: DataFrame) -> DataFrame:
         """Constrói a tabela dimensão dim_titulo com deduplicação, geração de surrogate key (MD5) e categorização do indexador por tipo de título do Tesouro Direto."""
-        return(
-            df
-            .select('tipo_titulo', 'data_vencimento')
+        return (
+            df.select("tipo_titulo", "data_vencimento")
             .distinct()
-            .orderBy(['tipo_titulo', 'data_vencimento'], ascending=[True, False])
+            .orderBy(["tipo_titulo", "data_vencimento"], ascending=[True, False])
             .withColumn(
-                'id_titulo',
-                F.md5(F.concat_ws('||', F.col('tipo_titulo'), F.col('data_vencimento')))
-                )
-            .withColumn('ano_vencimento', F.year('data_vencimento'))
-                .withColumn(
-                    "indexador",
-                    F.when(F.col("tipo_titulo").contains("Selic"), "Pós-fixado (Selic)")
-                    .when(F.col("tipo_titulo").contains("IPCA"), "Híbrido (IPCA+)")
-                    .when(F.col("tipo_titulo").contains("Prefixado"), "Prefixado")
-                    .when(F.col("tipo_titulo").contains("IGP-M"), "Híbrido (IGP-M)")
-                    .otherwise("Outro")
-                )
-            .select('id_titulo', 'tipo_titulo', 'data_vencimento', 'ano_vencimento', 'indexador')
+                "id_titulo",
+                F.md5(
+                    F.concat_ws("||", F.col("tipo_titulo"), F.col("data_vencimento"))
+                ),
+            )
+            .withColumn("ano_vencimento", F.year("data_vencimento"))
+            .withColumn(
+                "indexador",
+                F.when(F.col("tipo_titulo").contains("Selic"), "Pós-fixado (Selic)")
+                .when(F.col("tipo_titulo").contains("IPCA"), "Híbrido (IPCA+)")
+                .when(F.col("tipo_titulo").contains("Prefixado"), "Prefixado")
+                .when(F.col("tipo_titulo").contains("IGP-M"), "Híbrido (IGP-M)")
+                .otherwise("Outro"),
+            )
+            .select(
+                "id_titulo",
+                "tipo_titulo",
+                "data_vencimento",
+                "ano_vencimento",
+                "indexador",
+            )
         )
 
     def create_fct_precos_taxas(self, df: DataFrame) -> DataFrame:
         """Constrói a tabela fato fct_precos_taxas com preços (PU), taxas de compra/venda, spread e prazo até o vencimento por data base."""
-        return(
-            df
-            .withColumn(
-                'id_titulo',
-                F.md5(F.concat_ws('||', F.col('tipo_titulo'), F.col('data_vencimento')))
+        return (
+            df.withColumn(
+                "id_titulo",
+                F.md5(
+                    F.concat_ws("||", F.col("tipo_titulo"), F.col("data_vencimento"))
+                ),
             )
             .withColumn(
-                'dias_ate_vencimento',
-                F.datediff(F.col('data_vencimento'), F.col('data_base'))
+                "dias_ate_vencimento",
+                F.datediff(F.col("data_vencimento"), F.col("data_base")),
             )
             .withColumn(
-                'spread_taxa_manha',
-                F.round(F.col('taxa_venda_manha') - F.col('taxa_compra_manha'), 4)
+                "spread_taxa_manha",
+                F.round(F.col("taxa_venda_manha") - F.col("taxa_compra_manha"), 4),
             )
             .select(
-                'id_titulo',
-                'data_base',
-                'taxa_compra_manha',
-                'taxa_venda_manha',
-                'spread_taxa_manha',
-                'pu_compra_manha',
-                'pu_venda_manha',
-                'pu_base_manha',
-                'dias_ate_vencimento'
+                "id_titulo",
+                "data_base",
+                "taxa_compra_manha",
+                "taxa_venda_manha",
+                "spread_taxa_manha",
+                "pu_compra_manha",
+                "pu_venda_manha",
+                "pu_base_manha",
+                "dias_ate_vencimento",
             )
         )
-    
+
     def create_base_zc_df(self, df: DataFrame, dim_titulo: DataFrame) -> DataFrame:
         """Prepara a base de zero-coupons (Tesouro Prefixado e IPCA+) com cálculo da taxa mid e deduplicação determinística por id_titulo e data base, retendo a cotação de maior PU."""
-        return(
-            df
-            .join(dim_titulo.select('id_titulo', 'tipo_titulo', 'data_vencimento'), 'id_titulo')
-            .filter(F.col('tipo_titulo').isin('Tesouro Prefixado', 'Tesouro IPCA+'))
-            .filter(F.col('dias_ate_vencimento') > 0)
-            .withColumn(
-                'familia',
-                F.when(F.col('tipo_titulo') == 'Tesouro Prefixado', F.lit('PRE')).otherwise(F.lit('IPCA'))
+        return (
+            df.join(
+                dim_titulo.select("id_titulo", "tipo_titulo", "data_vencimento"),
+                "id_titulo",
             )
-            .withColumn('taxa_mid', (F.col('taxa_compra_manha') + F.col('taxa_venda_manha')) / 2)
-            .filter(F.col('taxa_mid').isNotNull() & F.col('pu_base_manha').isNotNull())
+            .filter(F.col("tipo_titulo").isin("Tesouro Prefixado", "Tesouro IPCA+"))
+            .filter(F.col("dias_ate_vencimento") > 0)
             .withColumn(
-                '_rn',
+                "familia",
+                F.when(
+                    F.col("tipo_titulo") == "Tesouro Prefixado", F.lit("PRE")
+                ).otherwise(F.lit("IPCA")),
+            )
+            .withColumn(
+                "taxa_mid", (F.col("taxa_compra_manha") + F.col("taxa_venda_manha")) / 2
+            )
+            .filter(F.col("taxa_mid").isNotNull() & F.col("pu_base_manha").isNotNull())
+            .withColumn(
+                "_rn",
                 F.row_number().over(
-                    Window.partitionBy('id_titulo', 'data_base').orderBy(F.col('pu_base_manha').desc())
-                )
+                    Window.partitionBy("id_titulo", "data_base").orderBy(
+                        F.col("pu_base_manha").desc()
+                    )
+                ),
             )
-            .filter(F.col('_rn') == 1)
-            .drop('_rn')
+            .filter(F.col("_rn") == 1)
+            .drop("_rn")
         )
 
     def create_dim_data(self, spark: SparkSession, df: DataFrame) -> DataFrame:
         """Gera a tabela dimensão temporal dim_data com calendário contínuo entre as datas base mínima e máxima, incluindo flag de dia com cotação e atributos de granularidade temporal (ano, trimestre, mês, ano-mês, dia da semana, fim de semana)."""
         lim = df.agg(
-            F.min('data_base').alias('mn'),
-            F.max('data_base').alias('mx')
+            F.min("data_base").alias("mn"), F.max("data_base").alias("mx")
         ).first()
 
         dias_com_cotacao = (
-            df
-            .select('data_base').distinct()
-            .withColumn('flag_dia_util_mercado', F.lit(True))
+            df.select("data_base")
+            .distinct()
+            .withColumn("flag_dia_util_mercado", F.lit(True))
         )
 
-        return(
+        return (
             spark.range(1)
             .select(
                 F.explode(
-                    F.sequence(F.lit(lim['mn']), F.lit(lim['mx']), F.expr('interval 1 day'))
-                ).alias('data_base')
+                    F.sequence(
+                        F.lit(lim["mn"]), F.lit(lim["mx"]), F.expr("interval 1 day")
+                    )
+                ).alias("data_base")
             )
-            .join(dias_com_cotacao, 'data_base', 'left')
-            .withColumn('flag_dia_util_mercado', F.coalesce(F.col('flag_dia_util_mercado'), F.lit(False)))
-            .withColumn('ano', F.year('data_base'))
-            .withColumn('trimestre', F.quarter('data_base'))
-            .withColumn('mes', F.month('data_base'))
-            .withColumn('ano_mes', F.date_format('data_base', 'yyyy-MM'))
-            .withColumn('dia_semana', F.dayofweek('data_base'))
-            .withColumn('flag_fim_de_semana', F.col('dia_semana').isin(1, 7)) 
+            .join(dias_com_cotacao, "data_base", "left")
+            .withColumn(
+                "flag_dia_util_mercado",
+                F.coalesce(F.col("flag_dia_util_mercado"), F.lit(False)),
+            )
+            .withColumn("ano", F.year("data_base"))
+            .withColumn("trimestre", F.quarter("data_base"))
+            .withColumn("mes", F.month("data_base"))
+            .withColumn("ano_mes", F.date_format("data_base", "yyyy-MM"))
+            .withColumn("dia_semana", F.dayofweek("data_base"))
+            .withColumn("flag_fim_de_semana", F.col("dia_semana").isin(1, 7))
         )
 
-    def create_fct_juros_vertices(self, spark: SparkSession, df: DataFrame) -> DataFrame:
+    def create_fct_juros_vertices(
+        self, spark: SparkSession, df: DataFrame
+    ) -> DataFrame:
         """Constrói a tabela fato fct_juros_vertices com interpolação linear das taxas em vértices fixos (1, 2, 3, 5 e 10 anos) a partir de títulos zero-coupon, limitando o gap máximo entre títulos vizinhos a 730 dias."""
         VERTICES_ANOS = [1, 2, 3, 5, 10]
         MAX_GAP_DIAS = 730
 
         vertices = spark.createDataFrame(
-            [(a,) for a in VERTICES_ANOS], ['vertice_anos']
+            [(a,) for a in VERTICES_ANOS], ["vertice_anos"]
         )
 
         pts = (
-            df
-            .select(
-                'data_base', 'familia',
-                F.col('dias_ate_vencimento').alias('dias'),
-                F.col('taxa_mid').alias('taxa')
+            df.select(
+                "data_base",
+                "familia",
+                F.col("dias_ate_vencimento").alias("dias"),
+                F.col("taxa_mid").alias("taxa"),
             )
             .crossJoin(vertices)
             .withColumn(
-                'vertice_dias',
-                F.expr('datediff(add_months(data_base, vertice_anos * 12), data_base)')
+                "vertice_dias",
+                F.expr("datediff(add_months(data_base, vertice_anos * 12), data_base)"),
             )
         )
 
-        chaves = ['data_base', 'familia', 'vertice_anos', 'vertice_dias']
+        chaves = ["data_base", "familia", "vertice_anos", "vertice_dias"]
 
-        w_lo = Window.partitionBy(*chaves).orderBy(F.col('dias').desc())
+        w_lo = Window.partitionBy(*chaves).orderBy(F.col("dias").desc())
         lo = (
-            pts.filter(F.col('dias') <= F.col('vertice_dias'))
-            .withColumn('rn', F.row_number().over(w_lo))
-            .filter(F.col('rn') == 1)
-            .select(*chaves, F.col('dias').alias('dias_lo'), F.col('taxa').alias('taxa_lo'))
-        )
-
-        w_hi = Window.partitionBy(*chaves).orderBy(F.col('dias').asc())
-        hi = (
-            pts.filter(F.col('dias') >= F.col('vertice_dias'))
-            .withColumn('rn', F.row_number().over(w_hi))
-            .filter(F.col('rn') == 1)
-            .select(*chaves, F.col('dias').alias('dias_hi'), F.col('taxa').alias('taxa_hi'))
-        )
-
-        return(
-            lo.join(hi, chaves)
-            .filter((F.col('dias_hi') - F.col('dias_lo')) <= MAX_GAP_DIAS)
-            .withColumn(
-                'taxa_vertice',
-                F.round(
-                    F.when(F.col('dias_hi') == F.col('dias_lo'), F.col('taxa_lo'))
-                    .otherwise(
-                        F.col('taxa_lo')
-                        + (F.col('taxa_hi') - F.col('taxa_lo'))
-                        * (F.col('vertice_dias') - F.col('dias_lo'))
-                        / (F.col('dias_hi') - F.col('dias_lo'))
-                    ),
-                    4
-                )
+            pts.filter(F.col("dias") <= F.col("vertice_dias"))
+            .withColumn("rn", F.row_number().over(w_lo))
+            .filter(F.col("rn") == 1)
+            .select(
+                *chaves, F.col("dias").alias("dias_lo"), F.col("taxa").alias("taxa_lo")
             )
-            .select('data_base', 'familia', 'vertice_anos', 'taxa_vertice', 'dias_lo', 'dias_hi')
+        )
+
+        w_hi = Window.partitionBy(*chaves).orderBy(F.col("dias").asc())
+        hi = (
+            pts.filter(F.col("dias") >= F.col("vertice_dias"))
+            .withColumn("rn", F.row_number().over(w_hi))
+            .filter(F.col("rn") == 1)
+            .select(
+                *chaves, F.col("dias").alias("dias_hi"), F.col("taxa").alias("taxa_hi")
+            )
+        )
+
+        return (
+            lo.join(hi, chaves)
+            .filter((F.col("dias_hi") - F.col("dias_lo")) <= MAX_GAP_DIAS)
+            .withColumn(
+                "taxa_vertice",
+                F.round(
+                    F.when(
+                        F.col("dias_hi") == F.col("dias_lo"), F.col("taxa_lo")
+                    ).otherwise(
+                        F.col("taxa_lo")
+                        + (F.col("taxa_hi") - F.col("taxa_lo"))
+                        * (F.col("vertice_dias") - F.col("dias_lo"))
+                        / (F.col("dias_hi") - F.col("dias_lo"))
+                    ),
+                    4,
+                ),
+            )
+            .select(
+                "data_base",
+                "familia",
+                "vertice_anos",
+                "taxa_vertice",
+                "dias_lo",
+                "dias_hi",
+            )
         )
 
     def create_fct_inflacao_implicita(self, df: DataFrame) -> DataFrame:
         """Calcula a tabela fato fct_inflacao_implicita derivando a expectativa de inflação (Fisher) a partir da diferença entre taxas prefixadas e reais (IPCA+) por vértice e data base."""
-        pre = (
-            df.filter(F.col('familia') == 'PRE')
-            .select('data_base', 'vertice_anos', F.col('taxa_vertice').alias('taxa_pre'))
+        pre = df.filter(F.col("familia") == "PRE").select(
+            "data_base", "vertice_anos", F.col("taxa_vertice").alias("taxa_pre")
         )
-        real = (
-            df.filter(F.col('familia') == 'IPCA')
-            .select('data_base', 'vertice_anos', F.col('taxa_vertice').alias('taxa_real_ipca'))
+        real = df.filter(F.col("familia") == "IPCA").select(
+            "data_base", "vertice_anos", F.col("taxa_vertice").alias("taxa_real_ipca")
         )
 
-        return(
-            pre.join(real, ['data_base', 'vertice_anos'])
-            .withColumn(
-                'inflacao_implicita',
-                F.round(((1 + F.col('taxa_pre') / 100) / (1 + F.col('taxa_real_ipca') / 100) - 1) * 100, 4)
-            )
+        return pre.join(real, ["data_base", "vertice_anos"]).withColumn(
+            "inflacao_implicita",
+            F.round(
+                (
+                    (1 + F.col("taxa_pre") / 100) / (1 + F.col("taxa_real_ipca") / 100)
+                    - 1
+                )
+                * 100,
+                4,
+            ),
         )
 
     def create_fct_risco_titulo(self, df: DataFrame) -> DataFrame:
         """Constrói a tabela fato fct_risco_titulo com métricas de risco de mercado por título: duration de Macaulay e modificada, convexidade, DV01, impacto de preço para choque de 100 bps, volatilidade anualizada (21 e 63 dias), retorno diário e drawdown acumulado."""
-        w_t = Window.partitionBy('id_titulo').orderBy('data_base')
+        w_t = Window.partitionBy("id_titulo").orderBy("data_base")
         w_21 = w_t.rowsBetween(-20, 0)
         w_63 = w_t.rowsBetween(-62, 0)
         w_acum = w_t.rowsBetween(Window.unboundedPreceding, 0)
-        anos = F.col('dias_ate_vencimento') / 365.25
-        y = F.col('taxa_mid') / 100.0
+        anos = F.col("dias_ate_vencimento") / 365.25
+        y = F.col("taxa_mid") / 100.0
 
-        return(
-            df
-            .withColumn('duration_macaulay', F.round(anos, 4))
-            .withColumn('duration_modificada', F.round(anos / (1 + y), 4))
-            .withColumn('convexidade', F.round(anos * (anos + 1) / F.pow(1 + y, 2), 4))
-            .withColumn('dv01', F.round(F.col('pu_base_manha') * F.col('duration_modificada') * 0.0001, 6))
+        return (
+            df.withColumn("duration_macaulay", F.round(anos, 4))
+            .withColumn("duration_modificada", F.round(anos / (1 + y), 4))
+            .withColumn("convexidade", F.round(anos * (anos + 1) / F.pow(1 + y, 2), 4))
             .withColumn(
-                'impacto_pu_alta_100bps_pct',
-                F.round((-F.col('duration_modificada') * 0.01 + 0.5 * F.col('convexidade') * 0.0001) * 100, 4)
+                "dv01",
+                F.round(
+                    F.col("pu_base_manha") * F.col("duration_modificada") * 0.0001, 6
+                ),
             )
             .withColumn(
-                'impacto_pu_queda_100bps_pct',
-                F.round((F.col('duration_modificada') * 0.01 + 0.5 * F.col('convexidade') * 0.0001) * 100, 4)
+                "impacto_pu_alta_100bps_pct",
+                F.round(
+                    (
+                        -F.col("duration_modificada") * 0.01
+                        + 0.5 * F.col("convexidade") * 0.0001
+                    )
+                    * 100,
+                    4,
+                ),
             )
-            .withColumn('retorno_pu_diario', F.col('pu_base_manha') / F.lag('pu_base_manha').over(w_t) - 1)
-            .withColumn('var_taxa_bps', F.round((F.col('taxa_mid') - F.lag('taxa_mid').over(w_t)) * 100, 2))
             .withColumn(
-                'vol_21d_anualizada_pct',
+                "impacto_pu_queda_100bps_pct",
+                F.round(
+                    (
+                        F.col("duration_modificada") * 0.01
+                        + 0.5 * F.col("convexidade") * 0.0001
+                    )
+                    * 100,
+                    4,
+                ),
+            )
+            .withColumn(
+                "retorno_pu_diario",
+                F.col("pu_base_manha") / F.lag("pu_base_manha").over(w_t) - 1,
+            )
+            .withColumn(
+                "var_taxa_bps",
+                F.round((F.col("taxa_mid") - F.lag("taxa_mid").over(w_t)) * 100, 2),
+            )
+            .withColumn(
+                "vol_21d_anualizada_pct",
                 F.when(
-                    F.count('retorno_pu_diario').over(w_21) >= 21,
-                    F.round(F.stddev('retorno_pu_diario').over(w_21) * F.sqrt(F.lit(252.0)) * 100, 4)
-                )
+                    F.count("retorno_pu_diario").over(w_21) >= 21,
+                    F.round(
+                        F.stddev("retorno_pu_diario").over(w_21)
+                        * F.sqrt(F.lit(252.0))
+                        * 100,
+                        4,
+                    ),
+                ),
             )
             .withColumn(
-                'vol_63d_anualizada_pct',
+                "vol_63d_anualizada_pct",
                 F.when(
-                    F.count('retorno_pu_diario').over(w_63) >= 63,
-                    F.round(F.stddev('retorno_pu_diario').over(w_63) * F.sqrt(F.lit(252.0)) * 100, 4)
-                )
+                    F.count("retorno_pu_diario").over(w_63) >= 63,
+                    F.round(
+                        F.stddev("retorno_pu_diario").over(w_63)
+                        * F.sqrt(F.lit(252.0))
+                        * 100,
+                        4,
+                    ),
+                ),
             )
-            .withColumn('pu_maximo_historico', F.max('pu_base_manha').over(w_acum))
+            .withColumn("pu_maximo_historico", F.max("pu_base_manha").over(w_acum))
             .withColumn(
-                'drawdown_pct',
-                F.round((F.col('pu_base_manha') / F.col('pu_maximo_historico') - 1) * 100, 4)
+                "drawdown_pct",
+                F.round(
+                    (F.col("pu_base_manha") / F.col("pu_maximo_historico") - 1) * 100, 4
+                ),
             )
-            .withColumn('max_drawdown_pct', F.min('drawdown_pct').over(w_acum))
+            .withColumn("max_drawdown_pct", F.min("drawdown_pct").over(w_acum))
             .select(
-                'id_titulo', 'data_base', 'familia', 'taxa_mid', 'pu_base_manha', 'dias_ate_vencimento',
-                'duration_macaulay', 'duration_modificada', 'convexidade', 'dv01',
-                'impacto_pu_alta_100bps_pct', 'impacto_pu_queda_100bps_pct',
-                'retorno_pu_diario', 'var_taxa_bps',
-                'vol_21d_anualizada_pct', 'vol_63d_anualizada_pct',
-                'drawdown_pct', 'max_drawdown_pct'
+                "id_titulo",
+                "data_base",
+                "familia",
+                "taxa_mid",
+                "pu_base_manha",
+                "dias_ate_vencimento",
+                "duration_macaulay",
+                "duration_modificada",
+                "convexidade",
+                "dv01",
+                "impacto_pu_alta_100bps_pct",
+                "impacto_pu_queda_100bps_pct",
+                "retorno_pu_diario",
+                "var_taxa_bps",
+                "vol_21d_anualizada_pct",
+                "vol_63d_anualizada_pct",
+                "drawdown_pct",
+                "max_drawdown_pct",
             )
         )
-    
+
     def create_fct_sinais_mercado(self, df: DataFrame) -> DataFrame:
         """Gera a tabela fato fct_sinais_mercado com sinais quantitativos por família e vértice: variação de 21 dias em bps, z-score e percentil histórico em janelas móveis (1, 3 e 5 anos) e classificação da leitura histórica da taxa."""
-        JANELAS = {'1a': 252, '3a': 756, '5a': 1260}
+        JANELAS = {"1a": 252, "3a": 756, "5a": 1260}
 
-        w_serie = Window.partitionBy('familia', 'vertice_anos').orderBy('data_base')
+        w_serie = Window.partitionBy("familia", "vertice_anos").orderBy("data_base")
 
-        sinais = (
-            df
-            .select('data_base', 'familia', 'vertice_anos', 'taxa_vertice')
-            .withColumn('var_21d_bps', F.round((F.col('taxa_vertice') - F.lag('taxa_vertice', 21).over(w_serie)) * 100, 2))
+        sinais = df.select(
+            "data_base", "familia", "vertice_anos", "taxa_vertice"
+        ).withColumn(
+            "var_21d_bps",
+            F.round(
+                (F.col("taxa_vertice") - F.lag("taxa_vertice", 21).over(w_serie)) * 100,
+                2,
+            ),
         )
 
         for nome_janela, n in JANELAS.items():
             w = w_serie.rowsBetween(-(n - 1), 0)
             sinais = (
-                sinais
-                .withColumn('_hist', F.collect_list('taxa_vertice').over(w))
+                sinais.withColumn("_hist", F.collect_list("taxa_vertice").over(w))
                 .withColumn(
-                    f'zscore_{nome_janela}',
+                    f"zscore_{nome_janela}",
                     F.when(
-                        F.size('_hist') >= n,
+                        F.size("_hist") >= n,
                         F.round(
-                            (F.col('taxa_vertice') - F.avg('taxa_vertice').over(w))
-                            / F.stddev('taxa_vertice').over(w),
-                            4
-                        )
-                    )
+                            (F.col("taxa_vertice") - F.avg("taxa_vertice").over(w))
+                            / F.stddev("taxa_vertice").over(w),
+                            4,
+                        ),
+                    ),
                 )
                 .withColumn(
-                    f'percentil_{nome_janela}',
+                    f"percentil_{nome_janela}",
                     F.when(
-                        F.size('_hist') >= n,
+                        F.size("_hist") >= n,
                         F.round(
                             (
-                                F.size(F.filter('_hist', lambda x: x < F.col('taxa_vertice')))
-                                + F.size(F.filter('_hist', lambda x: x == F.col('taxa_vertice'))) / 2.0
+                                F.size(
+                                    F.filter(
+                                        "_hist", lambda x: x < F.col("taxa_vertice")
+                                    )
+                                )
+                                + F.size(
+                                    F.filter(
+                                        "_hist", lambda x: x == F.col("taxa_vertice")
+                                    )
+                                )
+                                / 2.0
                             )
-                            / F.size('_hist') * 100,
-                            2
-                        )
-                    )
+                            / F.size("_hist")
+                            * 100,
+                            2,
+                        ),
+                    ),
                 )
-                .drop('_hist')
+                .drop("_hist")
             )
-        
-        return(
-            sinais
-            .withColumn(
-                'leitura_historica_5a',
-                F.when(F.col('percentil_5a') >= 90, F.lit('Taxa no topo da distribuição (>= P90)'))
-                .when(F.col('percentil_5a') <= 10, F.lit('Taxa no piso da distribuição (<= P10)'))
-                .when(F.col('percentil_5a').isNotNull(), F.lit('Zona intermediária'))
+
+        return (
+            sinais.withColumn(
+                "leitura_historica_5a",
+                F.when(
+                    F.col("percentil_5a") >= 90,
+                    F.lit("Taxa no topo da distribuição (>= P90)"),
+                )
+                .when(
+                    F.col("percentil_5a") <= 10,
+                    F.lit("Taxa no piso da distribuição (<= P10)"),
+                )
+                .when(F.col("percentil_5a").isNotNull(), F.lit("Zona intermediária")),
+            )
+            .select(
+                "data_base",
+                "familia",
+                "vertice_anos",
+                "taxa_vertice",
+                "var_21d_bps",
+                "zscore_1a",
+                "percentil_1a",
+                "zscore_3a",
+                "percentil_3a",
+                "zscore_5a",
+                "percentil_5a",
+                "leitura_historica_5a",
             )
         )
 
@@ -330,18 +446,74 @@ class Transformation:
         VERTICES_ANOS = [1, 2, 3, 5, 10]
 
         curva_larga = (
-            df
-            .groupBy('data_base', 'familia')
-            .pivot('vertice_anos', VERTICES_ANOS)
-            .agg(F.first('taxa_vertice'))
+            df.groupBy("data_base", "familia")
+            .pivot("vertice_anos", VERTICES_ANOS)
+            .agg(F.first("taxa_vertice"))
         )
 
         for a in VERTICES_ANOS:
-            curva_larga = curva_larga.withColumnRenamed(str(a), f'taxa_{a}a')
-        
-        return(
-            curva_larga
-            .withColumn('inclinacao_2s5s_bps', F.round((F.col('taxa_5a') - F.col('taxa_2a')) * 100, 2))
-            .withColumn('inclinacao_2s10s_bps', F.round((F.col('taxa_10a') - F.col('taxa_2a')) * 100, 2))
-            .withColumn('flag_curva_invertida_2s5s', F.col('inclinacao_2s5s_bps') < 0)
+            curva_larga = curva_larga.withColumnRenamed(str(a), f"taxa_{a}a")
+
+        return (
+            curva_larga.withColumn(
+                "inclinacao_2s5s_bps",
+                F.round((F.col("taxa_5a") - F.col("taxa_2a")) * 100, 2),
+            )
+            .withColumn(
+                "inclinacao_2s10s_bps",
+                F.round((F.col("taxa_10a") - F.col("taxa_2a")) * 100, 2),
+            )
+            .withColumn("flag_curva_invertida_2s5s", F.col("inclinacao_2s5s_bps") < 0)
         )
+
+    def validate_data_quality(self, df: DataFrame) -> dict:
+        """Executa validações de qualidade de dados sobre a camada silver e retorna um dicionário com as métricas coletadas: total de registros, taxas fora do range esperado (0%-30%), PUs negativos, datas base futuras, nulos em campos críticos e duplicatas por título e data."""
+        metricas = df.agg(
+            F.count(F.lit(1)).alias("total_registros"),
+            F.sum(
+                F.when(
+                    (F.col("taxa_compra_manha") < 0)
+                    | (F.col("taxa_compra_manha") > 30)
+                    | (F.col("taxa_venda_manha") < 0)
+                    | (F.col("taxa_venda_manha") > 30),
+                    F.lit(1),
+                ).otherwise(F.lit(0))
+            ).alias("taxas_fora_range"),
+            F.sum(
+                F.when(
+                    (F.col("pu_compra_manha") < 0)
+                    | (F.col("pu_venda_manha") < 0)
+                    | (F.col("pu_base_manha") < 0),
+                    F.lit(1),
+                ).otherwise(F.lit(0))
+            ).alias("pu_negativo"),
+            F.sum(
+                F.when(F.col("data_base") > F.current_date(), F.lit(1)).otherwise(
+                    F.lit(0)
+                )
+            ).alias("data_base_futura"),
+            F.sum(
+                F.when(
+                    F.col("tipo_titulo").isNull()
+                    | F.col("data_base").isNull()
+                    | F.col("data_vencimento").isNull(),
+                    F.lit(1),
+                ).otherwise(F.lit(0))
+            ).alias("nulos_campos_criticos"),
+        ).collect()[0]
+
+        duplicatas = (
+            df.groupBy("tipo_titulo", "data_vencimento", "data_base")
+            .agg(F.count(F.lit(1)).alias("cnt"))
+            .filter(F.col("cnt") > 1)
+            .count()
+        )
+
+        return {
+            "total_registros": metricas["total_registros"],
+            "taxas_fora_range": metricas["taxas_fora_range"],
+            "pu_negativo": metricas["pu_negativo"],
+            "data_base_futura": metricas["data_base_futura"],
+            "nulos_campos_criticos": metricas["nulos_campos_criticos"],
+            "duplicatas": duplicatas,
+        }

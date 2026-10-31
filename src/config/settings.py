@@ -1,12 +1,17 @@
 # src/config/settings.py
 
+import os
 import yaml
 import logging.config
 
-def carregar_config(path: str = '/Workspace/Users/rm372054@fiap.com.br/tesouro-transparente-pipeline/src/config/settings.yaml') -> dict:
+
+def carregar_config(
+    path: str = os.path.join(os.path.dirname(__file__), "settings.yaml"),
+) -> dict:
     """Carrega um arquivo de configuração YAML."""
-    with open(path, 'r') as file:
+    with open(path, "r") as file:
         return yaml.safe_load(file)
+
 
 def configurar_logging(config_logging: dict):
     """Aplica a configuração de logging lida do YAML."""

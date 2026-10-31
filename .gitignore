@@ -12,3 +12,7 @@ __pycache__/
 
 # Diretório de dados brutos / exports
 data/
+
+# Logs
+src/tesouro-transparente-pipeline.log
+*.log

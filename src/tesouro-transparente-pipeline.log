@@ -1726,3 +1726,693 @@ Traceback (most recent call last):
     raise LoadTesouroTransparenteException(f"Erro no motor Spark ao carregar os dados do tesouro direto em '{path}'") from e
 io_utils.exceptions.LoadTesouroTransparenteException: Erro no motor Spark ao carregar os dados do tesouro direto em '/VolumesInvalido/tesouro_transparente_pipeline/bronze/raw_data'
 2026-10-27 17:28:26 - __main__ - INFO - Pipeline finalizado com sucesso!
+2026-10-29 11:14:38 - config.settings - INFO - Logging configurado com sucesso via YAML.
+2026-10-29 11:14:38 - __main__ - INFO - Iniciando o job: Analise Titulos Tesouro Direto
+2026-10-29 11:14:38 - pipeline.pipeline - INFO - Pipeline iniciado...
+2026-10-29 11:14:38 - pipeline.pipeline - INFO - 
+            Obtido os seguintes paths:
+            bronze =  /Volumes/tesouro_transparente_pipeline/bronze/raw_data
+            silver =  `tesouro_transparente_pipeline`.`silver`
+            gold   =  `tesouro_transparente_pipeline`.`gold`
+            
+2026-10-29 11:14:38 - pipeline.pipeline - INFO - Iniciando validação de ambiente da camada bronze no caminho /Volumes/tesouro_transparente_pipeline/bronze/raw_data
+2026-10-29 11:14:41 - pipeline.pipeline - INFO - Camada bronze validada com sucesso!
+2026-10-29 11:14:41 - pipeline.pipeline - INFO - Lendo dados Parquet de: /Volumes/tesouro_transparente_pipeline/bronze/raw_data
+2026-10-29 11:14:51 - pyspark.sql.connect.logging - WARNING - Effective usage policy for this session is cct.Chlub3RlYm9va3MvOTU3MjcxMzIyOTIwMjkzEAEgATIkMDFhMTg3NWUtNThjMy03MTE5LTk3N2ItZDY1MTk3NjgyNjFhOiRhNmMyNjY4My02NGI4LTM3ZjQtODE2Zi1jMGVlNzUyZjhmZjhKDAiV1YzXBhDAyafNAlABWAFgAWj+2J7AlsWjDYgBAA==.
+2026-10-29 11:15:00 - pipeline.pipeline - INFO - Dados da camada bronze lidos com sucesso do caminho /Volumes/tesouro_transparente_pipeline/bronze/raw_data
+2026-10-29 11:15:00 - pipeline.pipeline - INFO - Salvando a tabela tesouro_transparente_silver...
+2026-10-29 11:15:13 - pipeline.pipeline - INFO - Tabela tesouro_transparente_silver salva com sucesso!
+2026-10-29 11:15:13 - pipeline.pipeline - INFO - Salvando a tabela dim_titulo...
+2026-10-29 11:15:18 - pipeline.pipeline - INFO - Tabela dim_titulo salva com sucesso!
+2026-10-29 11:15:18 - pipeline.pipeline - INFO - Salvando a tabela fct_precos_taxas...
+2026-10-29 11:15:25 - pipeline.pipeline - INFO - Tabela fct_precos_taxas salva com sucesso!
+2026-10-29 11:15:25 - pipeline.pipeline - INFO - Salvando a tabela stg_zero_cupom...
+2026-10-29 11:15:33 - pipeline.pipeline - INFO - Tabela stg_zero_cupom salva com sucesso!
+2026-10-29 11:15:36 - pipeline.pipeline - INFO - Salvando a tabela dim_data...
+2026-10-29 11:15:40 - pipeline.pipeline - INFO - Tabela dim_data salva com sucesso!
+2026-10-29 11:15:40 - pipeline.pipeline - INFO - Salvando a tabela fct_curva_juros_vertices...
+2026-10-29 11:15:45 - pipeline.pipeline - INFO - Tabela fct_curva_juros_vertices salva com sucesso!
+2026-10-29 11:15:45 - pipeline.pipeline - INFO - Salvando tabela fct_inflacao_implicita...
+2026-10-29 11:15:51 - pipeline.pipeline - INFO - Tabela fct_inflacao_implicita salva com sucesso!
+2026-10-29 11:15:51 - pipeline.pipeline - INFO - Salvando a tabela fct_risco_titulo...
+2026-10-29 11:15:54 - pipeline.pipeline - INFO - Tabela fct_risco_titulo salva com sucesso!
+2026-10-29 11:15:54 - pipeline.pipeline - INFO - Salvando a tabela fct_sinais_mercado...
+2026-10-29 11:16:05 - pipeline.pipeline - INFO - Tabela fct_sinais_mercado salva com sucesso!
+2026-10-29 11:16:05 - pipeline.pipeline - INFO - Salvando a tabela fct_inclinacao_curva...
+2026-10-29 11:16:10 - pipeline.pipeline - INFO - Tabela fct_inclinacao_curva salva com sucesso!
+2026-10-29 11:16:10 - pipeline.pipeline - INFO - Pipeline concluído com sucesso! Duração: 92.09s.
+2026-10-29 11:16:10 - __main__ - INFO - Pipeline finalizado com sucesso!
+2026-10-29 13:34:33 - config.settings - INFO - Logging configurado com sucesso via YAML.
+2026-10-29 13:34:33 - __main__ - INFO - Iniciando o job: Analise Titulos Tesouro Direto
+2026-10-29 13:34:33 - pipeline.pipeline - INFO - Pipeline iniciado...
+2026-10-29 13:34:33 - pipeline.pipeline - INFO - 
+            Obtido os seguintes paths:
+            bronze =  /Volumes/tesouro_transparente_pipeline/bronze/raw_data
+            silver =  `tesouro_transparente_pipeline`.`silver`
+            gold   =  `tesouro_transparente_pipeline`.`gold`
+            
+2026-10-29 13:34:33 - pipeline.pipeline - INFO - Iniciando validação de ambiente da camada bronze no caminho /Volumes/tesouro_transparente_pipeline/bronze/raw_data
+2026-10-29 13:34:35 - pipeline.pipeline - INFO - Camada bronze validada com sucesso!
+2026-10-29 13:34:35 - pipeline.pipeline - INFO - Lendo dados Parquet de: /Volumes/tesouro_transparente_pipeline/bronze/raw_data
+2026-10-29 13:34:47 - pyspark.sql.connect.logging - WARNING - Effective usage policy for this session is cct.Chlub3RlYm9va3MvOTU3MjcxMzIyOTIwMjkzEAEgATIkMDFhMTg3ZGUtNzFiOS03ZmRiLTg2ODQtMDEyNGVkNzEzNmNhOiRhNmMyNjY4My02NGI4LTM3ZjQtODE2Zi1jMGVlNzUyZjhmZjhKDAjglo3XBhDAwK3MAlABWAFgAWj+2J7AlsWjDYgBAA==.
+2026-10-29 13:34:58 - pipeline.pipeline - INFO - Dados da camada bronze lidos com sucesso do caminho /Volumes/tesouro_transparente_pipeline/bronze/raw_data
+2026-10-29 13:35:03 - pipeline.pipeline - INFO - Data Quality: {'total_registros': 3716718, 'taxas_fora_range': 107415, 'pu_negativo': 0, 'data_base_futura': 0, 'nulos_campos_criticos': 0, 'duplicatas': 177434}
+2026-10-29 13:35:03 - pipeline.pipeline - INFO - Salvando a tabela tesouro_transparente_silver...
+2026-10-29 13:35:09 - pyspark.sql.connect.logging - ERROR - GRPC Error received
+Traceback (most recent call last):
+  File "/databricks/python/lib/python3.12/site-packages/pyspark/sql/connect/client/core.py", line 2361, in _execute_and_fetch_as_iterator
+    for b in generator:
+  File "<frozen _collections_abc>", line 356, in __next__
+  File "/databricks/python/lib/python3.12/site-packages/pyspark/sql/connect/client/reattach.py", line 166, in send
+    if not self._has_next():
+           ^^^^^^^^^^^^^^^^
+  File "/databricks/python/lib/python3.12/site-packages/pyspark/sql/connect/client/reattach.py", line 235, in _has_next
+    raise e
+  File "/databricks/python/lib/python3.12/site-packages/pyspark/sql/connect/client/reattach.py", line 207, in _has_next
+    self._current = self._call_iter(
+                    ^^^^^^^^^^^^^^^^
+  File "/databricks/python/lib/python3.12/site-packages/pyspark/sql/connect/client/reattach.py", line 374, in _call_iter
+    raise e
+  File "/databricks/python/lib/python3.12/site-packages/pyspark/sql/connect/client/reattach.py", line 319, in _call_iter
+    return iter_fun()
+           ^^^^^^^^^^
+  File "/databricks/python/lib/python3.12/site-packages/pyspark/sql/connect/client/reattach.py", line 208, in <lambda>
+    lambda: next(self._iterator)  # type: ignore[arg-type]
+            ^^^^^^^^^^^^^^^^^^^^
+  File "/databricks/python/lib/python3.12/site-packages/pyspark/sql/connect/client/core.py", line 881, in __iter__
+    for response in self._call:
+  File "/databricks/python_shell/lib/dbruntime/serverless/arch_pin_interceptor.py", line 78, in __next__
+    return next(self._response)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/databricks/python/lib/python3.12/site-packages/grpc/_channel.py", line 538, in __next__
+    return self._next()
+           ^^^^^^^^^^^^
+  File "/databricks/python/lib/python3.12/site-packages/grpc/_channel.py", line 962, in _next
+    raise self
+grpc._channel._MultiThreadedRendezvous: <_MultiThreadedRendezvous of RPC that terminated with:
+	status = StatusCode.INTERNAL
+	details = "[DELTA_METADATA_MISMATCH] A metadata mismatch was detected when writing to the Delta table.
+- Partition columns do not match the partition columns of the table.
+Given: [`data_base`]
+Table: []
+
+- To overwrite your schema or change partitioning, please set: '.option("overwriteSchema", "true")'.
+Note that the schema can't be overwritten when using 'replaceWhere'.
+- Table ACLs are enabled in this cluster, so automatic schema migration is not allowed. Please use the ALTER TABLE command for changing the schema."
+	debug_error_string = "UNKNOWN:Error received from peer ipv4:127.0.0.1:7073 {grpc_message:"[DELTA_METADATA_MISMATCH] A metadata mismatch was detected when writing to the Delta table.\n- Partition columns do not match the partition columns of the table.\nGiven: [`data_base`]\nTable: []\n\n- To overwrite your schema or change partitioning, please set: \'.option(\"overwriteSchema\", \"true\")\'.\nNote that the schema can\'t be overwritten when using \'replaceWhere\'.\n- Table ACLs are enabled in this cluster, so automatic schema migration is not allowed. Please use the ALTER TABLE command for changing the schema.", grpc_status:13}"
+>
+2026-10-29 13:35:09 - io_utils.data_handler - ERROR - Erro de análise/metadados no Spark [Classe: DELTA_METADATA_MISMATCH]: [DELTA_METADATA_MISMATCH] A metadata mismatch was detected when writing to the Delta table.
+- Partition columns do not match the partition columns of the table.
+Given: [`data_base`]
+Table: []
+
+- To overwrite your schema or change partitioning, please set: '.option("overwriteSchema", "true")'.
+Note that the schema can't be overwritten when using 'replaceWhere'.
+- Table ACLs are enabled in this cluster, so automatic schema migration is not allowed. Please use the ALTER TABLE command for changing the schema.
+
+JVM stacktrace:
+com.databricks.sql.transaction.tahoe.DeltaAnalysisExceptionWithSubErrors
+	at com.databricks.sql.transaction.tahoe.MetadataMismatchErrorBuilder.finalizeAndThrow(DeltaErrors.scala:5097)
+	at com.databricks.sql.transaction.tahoe.schema.ImplicitMetadataOperation.updateMetadata(ImplicitMetadataOperation.scala:239)
+	at com.databricks.sql.transaction.tahoe.schema.ImplicitMetadataOperation.updateMetadata$(ImplicitMetadataOperation.scala:92)
+	at com.databricks.sql.transaction.tahoe.commands.WriteIntoDeltaEdge.updateMetadata(WriteIntoDeltaEdge.scala:138)
+	at com.databricks.sql.transaction.tahoe.commands.WriteIntoDeltaEdge.writeAndReturnCommitDataAndMaterializationPlans(WriteIntoDeltaEdge.scala:630)
+	at com.databricks.sql.transaction.tahoe.commands.WriteIntoDeltaEdge.writeAndReturnCommitData(WriteIntoDeltaEdge.scala:411)
+	at com.databricks.sql.transaction.tahoe.commands.CreateDeltaTableCommand.doDeltaWrite$1(CreateDeltaTableCommand.scala:908)
+	at com.databricks.sql.transaction.tahoe.commands.CreateDeltaTableCommand.handleCreateTableAsSelect(CreateDeltaTableCommand.scala:1065)
+	at com.databricks.sql.transaction.tahoe.commands.CreateDeltaTableCommand.$anonfun$handleCommit$1(CreateDeltaTableCommand.scala:492)
+	at com.databricks.sql.transaction.tahoe.OptimisticTransaction$.withActive(OptimisticTransaction.scala:379)
+	at com.databricks.sql.transaction.tahoe.commands.CreateDeltaTableCommand.handleCommit(CreateDeltaTableCommand.scala:472)
+	at com.databricks.sql.transaction.tahoe.commands.CreateDeltaTableCommand.$anonfun$run$9(CreateDeltaTableCommand.scala:360)
+	at com.databricks.sql.transaction.tahoe.metering.DeltaLogging.withOperationTypeTag(DeltaLogging.scala:866)
+	at com.databricks.sql.transaction.tahoe.metering.DeltaLogging.withOperationTypeTag$(DeltaLogging.scala:853)
+	at com.databricks.sql.transaction.tahoe.commands.CreateDeltaTableCommand.withOperationTypeTag(CreateDeltaTableCommand.scala:117)
+	at com.databricks.sql.transaction.tahoe.metering.DeltaLogging.$anonfun$recordDeltaOperationInternal$2(DeltaLogging.scala:535)
+	at com.databricks.spark.util.FrameProfiler$.record(FrameProfiler.scala:115)
+	at com.databricks.sql.transaction.tahoe.metering.DeltaLogging.recordFrameProfileWithCallSite(DeltaLogging.scala:981)
+	at com.databricks.sql.transaction.tahoe.metering.DeltaLogging.recordFrameProfileWithCallSite$(DeltaLogging.scala:978)
+	at com.databricks.sql.transaction.tahoe.commands.CreateDeltaTableCommand.recordFrameProfileWithCallSite(CreateDeltaTableCommand.scala:117)
+	at com.databricks.sql.transaction.tahoe.metering.DeltaLogging.$anonfun$recordDeltaOperationInternal$1(DeltaLogging.scala:534)
+	at com.databricks.logging.UsageLogging.$anonfun$recordOperation$1(UsageLogging.scala:363)
+	at com.databricks.logging.UsageLogging.executeThunkAndCaptureResultTags$1(UsageLogging.scala:517)
+	at com.databricks.logging.UsageLogging.$anonfun$recordOperationWithResultTags$5(UsageLogging.scala:544)
+	at com.databricks.logging.AttributionContextTracing.$anonfun$withAttributionContext$1(AttributionContextTracing.scala:146)
+	at com.databricks.logging.AttributionContext$.withValue(AttributionContext.scala:352)
+	at com.databricks.logging.AttributionContextTracing.withAttributionContext(AttributionContextTracing.scala:144)
+	at com.databricks.logging.AttributionContextTracing.withAttributionContext$(AttributionContextTracing.scala:141)
+	at com.databricks.spark.util.PublicDBLogging.withAttributionContext(DatabricksSparkUsageLogger.scala:35)
+	at com.databricks.logging.AttributionContextTracing.withAttributionTags(AttributionContextTracing.scala:201)
+	at com.databricks.logging.AttributionContextTracing.withAttributionTags$(AttributionContextTracing.scala:182)
+	at com.databricks.spark.util.PublicDBLogging.withAttributionTags(DatabricksSparkUsageLogger.scala:35)
+	at com.databricks.logging.UsageLogging.$anonfun$recordOperationWithResultTags$4(UsageLogging.scala:512)
+	at com.databricks.logging.UsageLogging.withOtelSpanInContext$1(UsageLogging.scala:504)
+	at com.databricks.logging.UsageLogging.recordOperationWithResultTags(UsageLogging.scala:507)
+	at com.databricks.logging.UsageLogging.recordOperationWithResultTags$(UsageLogging.scala:372)
+	at com.databricks.spark.util.PublicDBLogging.recordOperationWithResultTags(DatabricksSparkUsageLogger.scala:35)
+	at com.databricks.logging.UsageLogging.recordOperation(UsageLogging.scala:364)
+	at com.databricks.logging.UsageLogging.recordOperation$(UsageLogging.scala:328)
+	at com.databricks.spark.util.PublicDBLogging.recordOperation(DatabricksSparkUsageLogger.scala:35)
+	at com.databricks.spark.util.PublicDBLogging.recordOperation0(DatabricksSparkUsageLogger.scala:101)
+	at com.databricks.spark.util.DatabricksSparkUsageLogger.recordOperation(DatabricksSparkUsageLogger.scala:298)
+	at com.databricks.spark.util.UsageLogger.recordOperation(UsageLogger.scala:78)
+	at com.databricks.spark.util.UsageLogger.recordOperation$(UsageLogger.scala:65)
+	at com.databricks.spark.util.DatabricksSparkUsageLogger.recordOperation(DatabricksSparkUsageLogger.scala:257)
+	at com.databricks.spark.util.UsageLogging.recordOperation(UsageLogger.scala:537)
+	at com.databricks.spark.util.UsageLogging.recordOperation$(UsageLogger.scala:516)
+	at com.databricks.sql.transaction.tahoe.commands.CreateDeltaTableCommand.recordOperation(CreateDeltaTableCommand.scala:117)
+	at com.databricks.sql.transaction.tahoe.metering.DeltaLogging.recordDeltaOperationInternal(DeltaLogging.scala:533)
+	at com.databricks.sql.transaction.tahoe.metering.DeltaLogging.recordDeltaOperation(DeltaLogging.scala:523)
+	at com.databricks.sql.transaction.tahoe.metering.DeltaLogging.recordDeltaOperation$(DeltaLogging.scala:512)
+	at com.databricks.sql.transaction.tahoe.commands.CreateDeltaTableCommand.recordDeltaOperation(CreateDeltaTableCommand.scala:117)
+	at com.databricks.sql.transaction.tahoe.commands.CreateDeltaTableCommand.run(CreateDeltaTableCommand.scala:310)
+	at com.databricks.sql.transaction.tahoe.catalog.AbstractDeltaCatalog.$anonfun$createDeltaTable$1(AbstractDeltaCatalog.scala:1389)
+	at com.databricks.spark.util.FrameProfiler$.record(FrameProfiler.scala:115)
+	at com.databricks.sql.transaction.tahoe.metering.DeltaLogging.recordFrameProfileWithCallSite(DeltaLogging.scala:981)
+	at com.databricks.sql.transaction.tahoe.metering.DeltaLogging.recordFrameProfileWithCallSite$(DeltaLogging.scala:978)
+	at com.databricks.sql.transaction.tahoe.catalog.AbstractDeltaCatalog.recordFrameProfileWithCallSite(AbstractDeltaCatalog.scala:245)
+	at com.databricks.sql.transaction.tahoe.catalog.AbstractDeltaCatalog.com$databricks$sql$transaction$tahoe$catalog$AbstractDeltaCatalog$$createDeltaTable(AbstractDeltaCatalog.scala:652)
+	at com.databricks.sql.transaction.tahoe.catalog.AbstractDeltaCatalog$StagedDeltaTableV2.$anonfun$commitStagedChanges$1(AbstractDeltaCatalog.scala:3351)
+	at scala.runtime.java8.JFunction0$mcV$sp.apply(JFunction0$mcV$sp.scala:18)
+	at com.databricks.spark.util.FrameProfiler$.record(FrameProfiler.scala:115)
+	at com.databricks.sql.transaction.tahoe.metering.DeltaLogging.recordFrameProfileWithCallSite(DeltaLogging.scala:981)
+	at com.databricks.sql.transaction.tahoe.metering.DeltaLogging.recordFrameProfileWithCallSite$(DeltaLogging.scala:978)
+	at com.databricks.sql.transaction.tahoe.catalog.AbstractDeltaCatalog.recordFrameProfileWithCallSite(AbstractDeltaCatalog.scala:245)
+	at com.databricks.sql.transaction.tahoe.catalog.AbstractDeltaCatalog$StagedDeltaTableV2.commitStagedChanges(AbstractDeltaCatalog.scala:3313)
+	at org.apache.spark.sql.execution.datasources.v2.DataSourceV2Utils$.commitStagedChanges(DataSourceV2Utils.scala:326)
+	at org.apache.spark.sql.execution.datasources.v2.V2CreateTableAsSelectBaseExec.$anonfun$writeToTable$6(WriteToDataSourceV2Exec.scala:1243)
+	at scala.runtime.java8.JFunction0$mcV$sp.apply(JFunction0$mcV$sp.scala:18)
+	at org.apache.spark.sql.execution.datasources.v2.WriteToDataSourceV2Exec$.handleConcurrentCreateExceptions(WriteToDataSourceV2Exec.scala:84)
+	at org.apache.spark.sql.execution.datasources.v2.V2CreateTableAsSelectBaseExec.$anonfun$writeToTable$2(WriteToDataSourceV2Exec.scala:1243)
+	at org.apache.spark.util.Utils$.tryWithSafeFinallyAndFailureCallbacks(Utils.scala:1728)
+	at org.apache.spark.sql.execution.datasources.v2.V2CreateTableAsSelectBaseExec.$anonfun$writeToTable$1(WriteToDataSourceV2Exec.scala:1223)
+	at com.databricks.spark.util.FrameProfiler$.record(FrameProfiler.scala:115)
+	at org.apache.spark.sql.execution.datasources.v2.V2CreateTableAsSelectBaseExec.writeToTable(WriteToDataSourceV2Exec.scala:1247)
+	at org.apache.spark.sql.execution.datasources.v2.V2CreateTableAsSelectBaseExec.writeToTable$(WriteToDataSourceV2Exec.scala:1209)
+	at org.apache.spark.sql.execution.datasources.v2.AtomicReplaceTableAsSelectExec.writeToTable(WriteToDataSourceV2Exec.scala:348)
+	at org.apache.spark.sql.execution.datasources.v2.AtomicReplaceTableAsSelectExec.run(WriteToDataSourceV2Exec.scala:445)
+	at org.apache.spark.sql.execution.datasources.v2.V2CommandExec.$anonfun$result$3(V2CommandExec.scala:55)
+	at org.apache.spark.sql.execution.SparkPlan.runCommandInAetherOrSpark(SparkPlan.scala:231)
+	at org.apache.spark.sql.execution.datasources.v2.V2CommandExec.$anonfun$result$2(V2CommandExec.scala:55)
+	at com.databricks.spark.util.FrameProfiler$.record(FrameProfiler.scala:115)
+	at org.apache.spark.sql.execution.datasources.v2.V2CommandExec.$anonfun$result$1(V2CommandExec.scala:54)
+	at scala.util.Try$.apply(Try.scala:217)
+	at org.apache.spark.util.Utils$.doTryWithCallerStacktrace(Utils.scala:1798)
+	at org.apache.spark.util.Utils$.getTryWithCallerStacktrace(Utils.scala:1848)
+	at org.apache.spark.util.LazyTry.get(LazyTry.scala:78)
+	at org.apache.spark.sql.execution.datasources.v2.V2CommandExec.executeCollect(V2CommandExec.scala:65)
+	at org.apache.spark.sql.execution.QueryExecution$.$anonfun$runCommand$10(QueryExecution.scala:2965)
+	at com.databricks.util.LexicalThreadLocal$Handle.runWith(LexicalThreadLocal.scala:63)
+	at org.apache.spark.sql.execution.QueryExecution$.$anonfun$runCommand$9(QueryExecution.scala:2955)
+	at com.databricks.util.LexicalThreadLocal$Handle.runWith(LexicalThreadLocal.scala:63)
+	at org.apache.spark.sql.execution.QueryExecution$.executeWithCaches$1(QueryExecution.scala:2955)
+	at org.apache.spark.sql.execution.QueryExecution$.$anonfun$runCommand$8(QueryExecution.scala:2961)
+	at org.apache.spark.sql.catalyst.QueryPlanningTracker$.withTracker(QueryPlanningTracker.scala:306)
+	at org.apache.spark.sql.execution.QueryExecution$.$anonfun$runCommand$7(QueryExecution.scala:2948)
+	at org.apache.spark.sql.execution.SQLExecution$.$anonfun$withNewExecutionId0$29(SQLExecution.scala:1567)
+	at com.databricks.sql.util.MemoryTrackerHelper.withMemoryTracking(MemoryTrackerHelper.scala:111)
+	at org.apache.spark.sql.execution.SQLExecution$.$anonfun$withNewExecutionId0$26(SQLExecution.scala:1483)
+	at com.databricks.unity.UCSManager$.withTemporaryScope(UCSManager.scala:168)
+	at org.apache.spark.sql.execution.SQLExecution$.$anonfun$withNewExecutionId0$25(SQLExecution.scala:1371)
+	at org.apache.spark.sql.execution.SQLExecution$.withSessionTagsApplied(SQLExecution.scala:2354)
+	at org.apache.spark.sql.execution.SQLExecution$.$anonfun$withNewExecutionId0$24(SQLExecution.scala:1360)
+	at org.apache.spark.JobArtifactSet$.withActiveJobArtifactState(JobArtifactSet.scala:97)
+	at org.apache.spark.sql.artifact.ArtifactManager.$anonfun$withResources$1(ArtifactManager.scala:142)
+	at org.apache.spark.sql.artifact.ArtifactManager.withClassLoaderIfNeeded(ArtifactManager.scala:136)
+	at org.apache.spark.sql.artifact.ArtifactManager.withResources(ArtifactManager.scala:141)
+	at org.apache.spark.sql.execution.SQLExecution$.$anonfun$withNewExecutionId0$23(SQLExecution.scala:1360)
+	at org.apache.spark.sql.execution.SQLExecution$.withSQLConfPropagated(SQLExecution.scala:2389)
+	at org.apache.spark.sql.execution.SQLExecution$.$anonfun$withNewExecutionId0$3(SQLExecution.scala:1359)
+	at org.apache.spark.sql.execution.SQLExecution$.withEventV2ActionScope(SQLExecution.scala:1051)
+	at org.apache.spark.sql.execution.SQLExecution$.$anonfun$withNewExecutionId0$1(SQLExecution.scala:1100)
+	at org.apache.spark.sql.SparkSession.withActive(SparkSession.scala:881)
+	at org.apache.spark.sql.execution.SQLExecution$.withNewExecutionId0(SQLExecution.scala:1088)
+	at org.apache.spark.sql.execution.SQLExecution$.withNewExecutionId(SQLExecution.scala:2307)
+	at org.apache.spark.sql.execution.QueryExecution$.$anonfun$runCommand$6(QueryExecution.scala:2948)
+	at org.apache.spark.sql.execution.QueryExecution$.withInternalError(QueryExecution.scala:2806)
+	at org.apache.spark.sql.execution.QueryExecution$.$anonfun$runCommand$5(QueryExecution.scala:2944)
+	at org.apache.spark.sql.execution.QueryExecution.withMVTagsIfNecessary(QueryExecution.scala:1258)
+	at org.apache.spark.sql.execution.QueryExecution$.$anonfun$runCommand$4(QueryExecution.scala:2936)
+	at scala.Option.map(Option.scala:242)
+	at org.apache.spark.sql.execution.QueryExecution$.executeWithMVTags$1(QueryExecution.scala:2936)
+	at org.apache.spark.sql.execution.QueryExecution$.runCommand(QueryExecution.scala:2942)
+	at org.apache.spark.sql.execution.QueryExecution.org$apache$spark$sql$execution$QueryExecution$$eagerlyExecute$1(QueryExecution.scala:1302)
+	at org.apache.spark.sql.execution.QueryExecution$$anonfun$$nestedInanonfun$eagerlyExecuteCommands$1$1.applyOrElse(QueryExecution.scala:1319)
+	at org.apache.spark.sql.execution.QueryExecution$$anonfun$$nestedInanonfun$eagerlyExecuteCommands$1$1.applyOrElse(QueryExecution.scala:1311)
+	at org.apache.spark.sql.catalyst.trees.TreeNode.$anonfun$transformDownWithPruningCore$1(TreeNode.scala:704)
+	at org.apache.spark.sql.catalyst.trees.CurrentOrigin$.withOrigin(origin.scala:142)
+	at org.apache.spark.sql.catalyst.trees.TreeNode.transformDownWithPruningCore(TreeNode.scala:704)
+	at org.apache.spark.sql.catalyst.trees.TreeNode.transformDownWithPruning(TreeNode.scala:687)
+	at org.apache.spark.sql.catalyst.plans.logical.LogicalPlan.org$apache$spark$sql$catalyst$plans$logical$AnalysisHelper$$super$transformDownWithPruning(LogicalPlan.scala:49)
+	at org.apache.spark.sql.catalyst.plans.logical.AnalysisHelper.transformDownWithPruning(AnalysisHelper.scala:368)
+	at org.apache.spark.sql.catalyst.plans.logical.AnalysisHelper.transformDownWithPruning$(AnalysisHelper.scala:364)
+	at org.apache.spark.sql.catalyst.plans.logical.LogicalPlan.transformDownWithPruning(LogicalPlan.scala:49)
+	at org.apache.spark.sql.catalyst.plans.logical.LogicalPlan.transformDownWithPruning(LogicalPlan.scala:49)
+	at org.apache.spark.sql.catalyst.trees.TreeNode.transformDown(TreeNode.scala:651)
+	at org.apache.spark.sql.execution.QueryExecution.$anonfun$eagerlyExecuteCommands$1(QueryExecution.scala:1311)
+	at org.apache.spark.sql.catalyst.plans.logical.AnalysisHelper$.allowInvokingTransformsInAnalyzer(AnalysisHelper.scala:441)
+	at org.apache.spark.sql.execution.QueryExecution.eagerlyExecuteCommands(QueryExecution.scala:1311)
+	at org.apache.spark.sql.execution.QueryExecution.$anonfun$lazyCommandExecuted$1(QueryExecution.scala:1212)
+	at scala.util.Try$.apply(Try.scala:217)
+	at org.apache.spark.util.Utils$.doTryWithCallerStacktrace(Utils.scala:1798)
+	at org.apache.spark.util.Utils$.getTryWithCallerStacktrace(Utils.scala:1848)
+	at org.apache.spark.util.LazyTry.get(LazyTry.scala:78)
+	at org.apache.spark.sql.execution.QueryExecution.$anonfun$commandExecuted$1(QueryExecution.scala:1218)
+	at org.apache.spark.sql.execution.QueryExecution.withAbortTransactionOnFailure(QueryExecution.scala:2304)
+	at org.apache.spark.sql.execution.QueryExecution.commandExecuted(QueryExecution.scala:1218)
+	at org.apache.spark.sql.execution.QueryExecution.assertCommandExecuted(QueryExecution.scala:1369)
+	at org.apache.spark.sql.classic.DataFrameWriter.runCommand(DataFrameWriter.scala:978)
+	at org.apache.spark.sql.classic.DataFrameWriter.saveAsTable(DataFrameWriter.scala:789)
+	at org.apache.spark.sql.classic.DataFrameWriter.saveAsTable(DataFrameWriter.scala:667)
+	at org.apache.spark.sql.connect.planner.SparkConnectPlanner.handleWriteOperation(SparkConnectPlanner.scala:4939)
+	at org.apache.spark.sql.connect.planner.SparkConnectPlanner.process(SparkConnectPlanner.scala:3938)
+	at org.apache.spark.sql.connect.execution.ExecuteThreadRunner.$anonfun$handleCommand$1(ExecuteThreadRunner.scala:574)
+	at scala.runtime.java8.JFunction0$mcV$sp.apply(JFunction0$mcV$sp.scala:18)
+	at org.apache.spark.sql.execution.SQLExecution$.withPreExecutionPhaseWatch(SQLExecution.scala:2179)
+	at org.apache.spark.sql.connect.execution.ExecuteThreadRunner.withPreExecutionPhaseWatch(ExecuteThreadRunner.scala:553)
+	at org.apache.spark.sql.connect.execution.ExecuteThreadRunner.handleCommand(ExecuteThreadRunner.scala:574)
+	at org.apache.spark.sql.connect.execution.ExecuteThreadRunner.$anonfun$executeInternal$15(ExecuteThreadRunner.scala:442)
+	at scala.runtime.java8.JFunction0$mcV$sp.apply(JFunction0$mcV$sp.scala:18)
+	at com.databricks.util.LexicalThreadLocal$Handle.runWith(LexicalThreadLocal.scala:63)
+	at org.apache.spark.sql.connect.execution.SparkConnectUdfRejectionScope$.withExecutionSideEffectScope(SparkConnectUdfRejectionScope.scala:31)
+	at org.apache.spark.sql.connect.execution.ExecuteThreadRunner.$anonfun$executeInternal$1(ExecuteThreadRunner.scala:441)
+	at org.apache.spark.sql.connect.execution.ExecuteThreadRunner.$anonfun$executeInternal$1$adapted(ExecuteThreadRunner.scala:348)
+	at org.apache.spark.sql.connect.service.SessionHolder.$anonfun$withSession$2(SessionHolder.scala:962)
+	at org.apache.spark.sql.SparkSession.withActive(SparkSession.scala:881)
+	at org.apache.spark.sql.connect.service.SessionHolder.$anonfun$withSession$1(SessionHolder.scala:962)
+	at org.apache.spark.JobArtifactSet$.withActiveJobArtifactState(JobArtifactSet.scala:97)
+	at org.apache.spark.sql.artifact.ArtifactManager.$anonfun$withResources$1(ArtifactManager.scala:142)
+	at org.apache.spark.sql.artifact.ArtifactManager.withClassLoaderIfNeeded(ArtifactManager.scala:136)
+	at org.apache.spark.sql.artifact.ArtifactManager.withResources(ArtifactManager.scala:141)
+	at org.apache.spark.sql.connect.service.SessionHolder.withSession(SessionHolder.scala:961)
+	at org.apache.spark.sql.connect.execution.ExecuteThreadRunner.executeInternal(ExecuteThreadRunner.scala:348)
+	at org.apache.spark.sql.connect.execution.ExecuteThreadRunner.$anonfun$execute$1(ExecuteThreadRunner.scala:204)
+	at scala.runtime.java8.JFunction0$mcV$sp.apply(JFunction0$mcV$sp.scala:18)
+	at com.databricks.spark.connect.service.UtilizationMetrics.recordActiveQueries(UtilizationMetrics.scala:102)
+	at com.databricks.spark.connect.service.UtilizationMetrics.recordActiveQueries$(UtilizationMetrics.scala:99)
+	at org.apache.spark.sql.connect.execution.ExecuteThreadRunner.recordActiveQueries(ExecuteThreadRunner.scala:63)
+	at org.apache.spark.sql.connect.execution.ExecuteThreadRunner.org$apache$spark$sql$connect$execution$ExecuteThreadRunner$$execute(ExecuteThreadRunner.scala:196)
+	at org.apache.spark.sql.connect.execution.ExecuteThreadRunner$ExecutionThread.$anonfun$run$3(ExecuteThreadRunner.scala:647)
+	at scala.runtime.java8.JFunction0$mcV$sp.apply(JFunction0$mcV$sp.scala:18)
+	at com.databricks.spark.util.DBRTracing$.withSpanFromParent(DBRTracing.scala:70)
+	at org.apache.spark.sql.connect.execution.ExecuteThreadRunner$ExecutionThread.$anonfun$run$2(ExecuteThreadRunner.scala:647)
+	at scala.runtime.java8.JFunction0$mcV$sp.apply(JFunction0$mcV$sp.scala:18)
+	at com.databricks.unity.UCSEphemeralState$Handle.runWith(UCSEphemeralState.scala:51)
+	at com.databricks.unity.HandleImpl.runWith(UCSHandle.scala:138)
+	at com.databricks.unity.HandleImpl.$anonfun$runWithAndClose$1(UCSHandle.scala:147)
+	at scala.util.Using$.resource(Using.scala:296)
+	at com.databricks.unity.HandleImpl.runWithAndClose(UCSHandle.scala:146)
+	at org.apache.spark.sql.connect.execution.ExecuteThreadRunner$ExecutionThread.run(ExecuteThreadRunner.scala:646)
+2026-10-29 13:35:09 - __main__ - ERROR - Erro na camada de leitura/escrita de dados: Falha ao escrever a tabela em '`tesouro_transparente_pipeline`.`silver`.tesouro_transparente_silver'
+Traceback (most recent call last):
+  File "/Workspace/Users/rm372054@fiap.com.br/tesouro-transparente-pipeline/src/io_utils/data_handler.py", line 113, in write_delta
+    writer.saveAsTable(path + f".`{table_name}`")
+  File "/databricks/python/lib/python3.12/site-packages/pyspark/sql/connect/readwriter.py", line 828, in saveAsTable
+    _, _, ei = self._spark.client.execute_command(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/databricks/python/lib/python3.12/site-packages/pyspark/sql/connect/client/core.py", line 1812, in execute_command
+    data, _, metrics, observed_metrics, properties = self._execute_and_fetch(
+                                                     ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/databricks/python/lib/python3.12/site-packages/pyspark/sql/connect/client/core.py", line 2411, in _execute_and_fetch
+    for response in self._execute_and_fetch_as_iterator(
+  File "/databricks/python/lib/python3.12/site-packages/pyspark/sql/connect/client/core.py", line 2387, in _execute_and_fetch_as_iterator
+    self._handle_error(error, req.operation_id)
+  File "/databricks/python/lib/python3.12/site-packages/pyspark/sql/connect/client/core.py", line 2785, in _handle_error
+    self._handle_rpc_error(error)
+  File "/databricks/python/lib/python3.12/site-packages/pyspark/sql/connect/client/core.py", line 2882, in _handle_rpc_error
+    raise convert_exception(
+pyspark.errors.exceptions.connect.AnalysisException: [DELTA_METADATA_MISMATCH] A metadata mismatch was detected when writing to the Delta table.
+- Partition columns do not match the partition columns of the table.
+Given: [`data_base`]
+Table: []
+
+- To overwrite your schema or change partitioning, please set: '.option("overwriteSchema", "true")'.
+Note that the schema can't be overwritten when using 'replaceWhere'.
+- Table ACLs are enabled in this cluster, so automatic schema migration is not allowed. Please use the ALTER TABLE command for changing the schema.
+
+JVM stacktrace:
+com.databricks.sql.transaction.tahoe.DeltaAnalysisExceptionWithSubErrors
+	at com.databricks.sql.transaction.tahoe.MetadataMismatchErrorBuilder.finalizeAndThrow(DeltaErrors.scala:5097)
+	at com.databricks.sql.transaction.tahoe.schema.ImplicitMetadataOperation.updateMetadata(ImplicitMetadataOperation.scala:239)
+	at com.databricks.sql.transaction.tahoe.schema.ImplicitMetadataOperation.updateMetadata$(ImplicitMetadataOperation.scala:92)
+	at com.databricks.sql.transaction.tahoe.commands.WriteIntoDeltaEdge.updateMetadata(WriteIntoDeltaEdge.scala:138)
+	at com.databricks.sql.transaction.tahoe.commands.WriteIntoDeltaEdge.writeAndReturnCommitDataAndMaterializationPlans(WriteIntoDeltaEdge.scala:630)
+	at com.databricks.sql.transaction.tahoe.commands.WriteIntoDeltaEdge.writeAndReturnCommitData(WriteIntoDeltaEdge.scala:411)
+	at com.databricks.sql.transaction.tahoe.commands.CreateDeltaTableCommand.doDeltaWrite$1(CreateDeltaTableCommand.scala:908)
+	at com.databricks.sql.transaction.tahoe.commands.CreateDeltaTableCommand.handleCreateTableAsSelect(CreateDeltaTableCommand.scala:1065)
+	at com.databricks.sql.transaction.tahoe.commands.CreateDeltaTableCommand.$anonfun$handleCommit$1(CreateDeltaTableCommand.scala:492)
+	at com.databricks.sql.transaction.tahoe.OptimisticTransaction$.withActive(OptimisticTransaction.scala:379)
+	at com.databricks.sql.transaction.tahoe.commands.CreateDeltaTableCommand.handleCommit(CreateDeltaTableCommand.scala:472)
+	at com.databricks.sql.transaction.tahoe.commands.CreateDeltaTableCommand.$anonfun$run$9(CreateDeltaTableCommand.scala:360)
+	at com.databricks.sql.transaction.tahoe.metering.DeltaLogging.withOperationTypeTag(DeltaLogging.scala:866)
+	at com.databricks.sql.transaction.tahoe.metering.DeltaLogging.withOperationTypeTag$(DeltaLogging.scala:853)
+	at com.databricks.sql.transaction.tahoe.commands.CreateDeltaTableCommand.withOperationTypeTag(CreateDeltaTableCommand.scala:117)
+	at com.databricks.sql.transaction.tahoe.metering.DeltaLogging.$anonfun$recordDeltaOperationInternal$2(DeltaLogging.scala:535)
+	at com.databricks.spark.util.FrameProfiler$.record(FrameProfiler.scala:115)
+	at com.databricks.sql.transaction.tahoe.metering.DeltaLogging.recordFrameProfileWithCallSite(DeltaLogging.scala:981)
+	at com.databricks.sql.transaction.tahoe.metering.DeltaLogging.recordFrameProfileWithCallSite$(DeltaLogging.scala:978)
+	at com.databricks.sql.transaction.tahoe.commands.CreateDeltaTableCommand.recordFrameProfileWithCallSite(CreateDeltaTableCommand.scala:117)
+	at com.databricks.sql.transaction.tahoe.metering.DeltaLogging.$anonfun$recordDeltaOperationInternal$1(DeltaLogging.scala:534)
+	at com.databricks.logging.UsageLogging.$anonfun$recordOperation$1(UsageLogging.scala:363)
+	at com.databricks.logging.UsageLogging.executeThunkAndCaptureResultTags$1(UsageLogging.scala:517)
+	at com.databricks.logging.UsageLogging.$anonfun$recordOperationWithResultTags$5(UsageLogging.scala:544)
+	at com.databricks.logging.AttributionContextTracing.$anonfun$withAttributionContext$1(AttributionContextTracing.scala:146)
+	at com.databricks.logging.AttributionContext$.withValue(AttributionContext.scala:352)
+	at com.databricks.logging.AttributionContextTracing.withAttributionContext(AttributionContextTracing.scala:144)
+	at com.databricks.logging.AttributionContextTracing.withAttributionContext$(AttributionContextTracing.scala:141)
+	at com.databricks.spark.util.PublicDBLogging.withAttributionContext(DatabricksSparkUsageLogger.scala:35)
+	at com.databricks.logging.AttributionContextTracing.withAttributionTags(AttributionContextTracing.scala:201)
+	at com.databricks.logging.AttributionContextTracing.withAttributionTags$(AttributionContextTracing.scala:182)
+	at com.databricks.spark.util.PublicDBLogging.withAttributionTags(DatabricksSparkUsageLogger.scala:35)
+	at com.databricks.logging.UsageLogging.$anonfun$recordOperationWithResultTags$4(UsageLogging.scala:512)
+	at com.databricks.logging.UsageLogging.withOtelSpanInContext$1(UsageLogging.scala:504)
+	at com.databricks.logging.UsageLogging.recordOperationWithResultTags(UsageLogging.scala:507)
+	at com.databricks.logging.UsageLogging.recordOperationWithResultTags$(UsageLogging.scala:372)
+	at com.databricks.spark.util.PublicDBLogging.recordOperationWithResultTags(DatabricksSparkUsageLogger.scala:35)
+	at com.databricks.logging.UsageLogging.recordOperation(UsageLogging.scala:364)
+	at com.databricks.logging.UsageLogging.recordOperation$(UsageLogging.scala:328)
+	at com.databricks.spark.util.PublicDBLogging.recordOperation(DatabricksSparkUsageLogger.scala:35)
+	at com.databricks.spark.util.PublicDBLogging.recordOperation0(DatabricksSparkUsageLogger.scala:101)
+	at com.databricks.spark.util.DatabricksSparkUsageLogger.recordOperation(DatabricksSparkUsageLogger.scala:298)
+	at com.databricks.spark.util.UsageLogger.recordOperation(UsageLogger.scala:78)
+	at com.databricks.spark.util.UsageLogger.recordOperation$(UsageLogger.scala:65)
+	at com.databricks.spark.util.DatabricksSparkUsageLogger.recordOperation(DatabricksSparkUsageLogger.scala:257)
+	at com.databricks.spark.util.UsageLogging.recordOperation(UsageLogger.scala:537)
+	at com.databricks.spark.util.UsageLogging.recordOperation$(UsageLogger.scala:516)
+	at com.databricks.sql.transaction.tahoe.commands.CreateDeltaTableCommand.recordOperation(CreateDeltaTableCommand.scala:117)
+	at com.databricks.sql.transaction.tahoe.metering.DeltaLogging.recordDeltaOperationInternal(DeltaLogging.scala:533)
+	at com.databricks.sql.transaction.tahoe.metering.DeltaLogging.recordDeltaOperation(DeltaLogging.scala:523)
+	at com.databricks.sql.transaction.tahoe.metering.DeltaLogging.recordDeltaOperation$(DeltaLogging.scala:512)
+	at com.databricks.sql.transaction.tahoe.commands.CreateDeltaTableCommand.recordDeltaOperation(CreateDeltaTableCommand.scala:117)
+	at com.databricks.sql.transaction.tahoe.commands.CreateDeltaTableCommand.run(CreateDeltaTableCommand.scala:310)
+	at com.databricks.sql.transaction.tahoe.catalog.AbstractDeltaCatalog.$anonfun$createDeltaTable$1(AbstractDeltaCatalog.scala:1389)
+	at com.databricks.spark.util.FrameProfiler$.record(FrameProfiler.scala:115)
+	at com.databricks.sql.transaction.tahoe.metering.DeltaLogging.recordFrameProfileWithCallSite(DeltaLogging.scala:981)
+	at com.databricks.sql.transaction.tahoe.metering.DeltaLogging.recordFrameProfileWithCallSite$(DeltaLogging.scala:978)
+	at com.databricks.sql.transaction.tahoe.catalog.AbstractDeltaCatalog.recordFrameProfileWithCallSite(AbstractDeltaCatalog.scala:245)
+	at com.databricks.sql.transaction.tahoe.catalog.AbstractDeltaCatalog.com$databricks$sql$transaction$tahoe$catalog$AbstractDeltaCatalog$$createDeltaTable(AbstractDeltaCatalog.scala:652)
+	at com.databricks.sql.transaction.tahoe.catalog.AbstractDeltaCatalog$StagedDeltaTableV2.$anonfun$commitStagedChanges$1(AbstractDeltaCatalog.scala:3351)
+	at scala.runtime.java8.JFunction0$mcV$sp.apply(JFunction0$mcV$sp.scala:18)
+	at com.databricks.spark.util.FrameProfiler$.record(FrameProfiler.scala:115)
+	at com.databricks.sql.transaction.tahoe.metering.DeltaLogging.recordFrameProfileWithCallSite(DeltaLogging.scala:981)
+	at com.databricks.sql.transaction.tahoe.metering.DeltaLogging.recordFrameProfileWithCallSite$(DeltaLogging.scala:978)
+	at com.databricks.sql.transaction.tahoe.catalog.AbstractDeltaCatalog.recordFrameProfileWithCallSite(AbstractDeltaCatalog.scala:245)
+	at com.databricks.sql.transaction.tahoe.catalog.AbstractDeltaCatalog$StagedDeltaTableV2.commitStagedChanges(AbstractDeltaCatalog.scala:3313)
+	at org.apache.spark.sql.execution.datasources.v2.DataSourceV2Utils$.commitStagedChanges(DataSourceV2Utils.scala:326)
+	at org.apache.spark.sql.execution.datasources.v2.V2CreateTableAsSelectBaseExec.$anonfun$writeToTable$6(WriteToDataSourceV2Exec.scala:1243)
+	at scala.runtime.java8.JFunction0$mcV$sp.apply(JFunction0$mcV$sp.scala:18)
+	at org.apache.spark.sql.execution.datasources.v2.WriteToDataSourceV2Exec$.handleConcurrentCreateExceptions(WriteToDataSourceV2Exec.scala:84)
+	at org.apache.spark.sql.execution.datasources.v2.V2CreateTableAsSelectBaseExec.$anonfun$writeToTable$2(WriteToDataSourceV2Exec.scala:1243)
+	at org.apache.spark.util.Utils$.tryWithSafeFinallyAndFailureCallbacks(Utils.scala:1728)
+	at org.apache.spark.sql.execution.datasources.v2.V2CreateTableAsSelectBaseExec.$anonfun$writeToTable$1(WriteToDataSourceV2Exec.scala:1223)
+	at com.databricks.spark.util.FrameProfiler$.record(FrameProfiler.scala:115)
+	at org.apache.spark.sql.execution.datasources.v2.V2CreateTableAsSelectBaseExec.writeToTable(WriteToDataSourceV2Exec.scala:1247)
+	at org.apache.spark.sql.execution.datasources.v2.V2CreateTableAsSelectBaseExec.writeToTable$(WriteToDataSourceV2Exec.scala:1209)
+	at org.apache.spark.sql.execution.datasources.v2.AtomicReplaceTableAsSelectExec.writeToTable(WriteToDataSourceV2Exec.scala:348)
+	at org.apache.spark.sql.execution.datasources.v2.AtomicReplaceTableAsSelectExec.run(WriteToDataSourceV2Exec.scala:445)
+	at org.apache.spark.sql.execution.datasources.v2.V2CommandExec.$anonfun$result$3(V2CommandExec.scala:55)
+	at org.apache.spark.sql.execution.SparkPlan.runCommandInAetherOrSpark(SparkPlan.scala:231)
+	at org.apache.spark.sql.execution.datasources.v2.V2CommandExec.$anonfun$result$2(V2CommandExec.scala:55)
+	at com.databricks.spark.util.FrameProfiler$.record(FrameProfiler.scala:115)
+	at org.apache.spark.sql.execution.datasources.v2.V2CommandExec.$anonfun$result$1(V2CommandExec.scala:54)
+	at scala.util.Try$.apply(Try.scala:217)
+	at org.apache.spark.util.Utils$.doTryWithCallerStacktrace(Utils.scala:1798)
+	at org.apache.spark.util.Utils$.getTryWithCallerStacktrace(Utils.scala:1848)
+	at org.apache.spark.util.LazyTry.get(LazyTry.scala:78)
+	at org.apache.spark.sql.execution.datasources.v2.V2CommandExec.executeCollect(V2CommandExec.scala:65)
+	at org.apache.spark.sql.execution.QueryExecution$.$anonfun$runCommand$10(QueryExecution.scala:2965)
+	at com.databricks.util.LexicalThreadLocal$Handle.runWith(LexicalThreadLocal.scala:63)
+	at org.apache.spark.sql.execution.QueryExecution$.$anonfun$runCommand$9(QueryExecution.scala:2955)
+	at com.databricks.util.LexicalThreadLocal$Handle.runWith(LexicalThreadLocal.scala:63)
+	at org.apache.spark.sql.execution.QueryExecution$.executeWithCaches$1(QueryExecution.scala:2955)
+	at org.apache.spark.sql.execution.QueryExecution$.$anonfun$runCommand$8(QueryExecution.scala:2961)
+	at org.apache.spark.sql.catalyst.QueryPlanningTracker$.withTracker(QueryPlanningTracker.scala:306)
+	at org.apache.spark.sql.execution.QueryExecution$.$anonfun$runCommand$7(QueryExecution.scala:2948)
+	at org.apache.spark.sql.execution.SQLExecution$.$anonfun$withNewExecutionId0$29(SQLExecution.scala:1567)
+	at com.databricks.sql.util.MemoryTrackerHelper.withMemoryTracking(MemoryTrackerHelper.scala:111)
+	at org.apache.spark.sql.execution.SQLExecution$.$anonfun$withNewExecutionId0$26(SQLExecution.scala:1483)
+	at com.databricks.unity.UCSManager$.withTemporaryScope(UCSManager.scala:168)
+	at org.apache.spark.sql.execution.SQLExecution$.$anonfun$withNewExecutionId0$25(SQLExecution.scala:1371)
+	at org.apache.spark.sql.execution.SQLExecution$.withSessionTagsApplied(SQLExecution.scala:2354)
+	at org.apache.spark.sql.execution.SQLExecution$.$anonfun$withNewExecutionId0$24(SQLExecution.scala:1360)
+	at org.apache.spark.JobArtifactSet$.withActiveJobArtifactState(JobArtifactSet.scala:97)
+	at org.apache.spark.sql.artifact.ArtifactManager.$anonfun$withResources$1(ArtifactManager.scala:142)
+	at org.apache.spark.sql.artifact.ArtifactManager.withClassLoaderIfNeeded(ArtifactManager.scala:136)
+	at org.apache.spark.sql.artifact.ArtifactManager.withResources(ArtifactManager.scala:141)
+	at org.apache.spark.sql.execution.SQLExecution$.$anonfun$withNewExecutionId0$23(SQLExecution.scala:1360)
+	at org.apache.spark.sql.execution.SQLExecution$.withSQLConfPropagated(SQLExecution.scala:2389)
+	at org.apache.spark.sql.execution.SQLExecution$.$anonfun$withNewExecutionId0$3(SQLExecution.scala:1359)
+	at org.apache.spark.sql.execution.SQLExecution$.withEventV2ActionScope(SQLExecution.scala:1051)
+	at org.apache.spark.sql.execution.SQLExecution$.$anonfun$withNewExecutionId0$1(SQLExecution.scala:1100)
+	at org.apache.spark.sql.SparkSession.withActive(SparkSession.scala:881)
+	at org.apache.spark.sql.execution.SQLExecution$.withNewExecutionId0(SQLExecution.scala:1088)
+	at org.apache.spark.sql.execution.SQLExecution$.withNewExecutionId(SQLExecution.scala:2307)
+	at org.apache.spark.sql.execution.QueryExecution$.$anonfun$runCommand$6(QueryExecution.scala:2948)
+	at org.apache.spark.sql.execution.QueryExecution$.withInternalError(QueryExecution.scala:2806)
+	at org.apache.spark.sql.execution.QueryExecution$.$anonfun$runCommand$5(QueryExecution.scala:2944)
+	at org.apache.spark.sql.execution.QueryExecution.withMVTagsIfNecessary(QueryExecution.scala:1258)
+	at org.apache.spark.sql.execution.QueryExecution$.$anonfun$runCommand$4(QueryExecution.scala:2936)
+	at scala.Option.map(Option.scala:242)
+	at org.apache.spark.sql.execution.QueryExecution$.executeWithMVTags$1(QueryExecution.scala:2936)
+	at org.apache.spark.sql.execution.QueryExecution$.runCommand(QueryExecution.scala:2942)
+	at org.apache.spark.sql.execution.QueryExecution.org$apache$spark$sql$execution$QueryExecution$$eagerlyExecute$1(QueryExecution.scala:1302)
+	at org.apache.spark.sql.execution.QueryExecution$$anonfun$$nestedInanonfun$eagerlyExecuteCommands$1$1.applyOrElse(QueryExecution.scala:1319)
+	at org.apache.spark.sql.execution.QueryExecution$$anonfun$$nestedInanonfun$eagerlyExecuteCommands$1$1.applyOrElse(QueryExecution.scala:1311)
+	at org.apache.spark.sql.catalyst.trees.TreeNode.$anonfun$transformDownWithPruningCore$1(TreeNode.scala:704)
+	at org.apache.spark.sql.catalyst.trees.CurrentOrigin$.withOrigin(origin.scala:142)
+	at org.apache.spark.sql.catalyst.trees.TreeNode.transformDownWithPruningCore(TreeNode.scala:704)
+	at org.apache.spark.sql.catalyst.trees.TreeNode.transformDownWithPruning(TreeNode.scala:687)
+	at org.apache.spark.sql.catalyst.plans.logical.LogicalPlan.org$apache$spark$sql$catalyst$plans$logical$AnalysisHelper$$super$transformDownWithPruning(LogicalPlan.scala:49)
+	at org.apache.spark.sql.catalyst.plans.logical.AnalysisHelper.transformDownWithPruning(AnalysisHelper.scala:368)
+	at org.apache.spark.sql.catalyst.plans.logical.AnalysisHelper.transformDownWithPruning$(AnalysisHelper.scala:364)
+	at org.apache.spark.sql.catalyst.plans.logical.LogicalPlan.transformDownWithPruning(LogicalPlan.scala:49)
+	at org.apache.spark.sql.catalyst.plans.logical.LogicalPlan.transformDownWithPruning(LogicalPlan.scala:49)
+	at org.apache.spark.sql.catalyst.trees.TreeNode.transformDown(TreeNode.scala:651)
+	at org.apache.spark.sql.execution.QueryExecution.$anonfun$eagerlyExecuteCommands$1(QueryExecution.scala:1311)
+	at org.apache.spark.sql.catalyst.plans.logical.AnalysisHelper$.allowInvokingTransformsInAnalyzer(AnalysisHelper.scala:441)
+	at org.apache.spark.sql.execution.QueryExecution.eagerlyExecuteCommands(QueryExecution.scala:1311)
+	at org.apache.spark.sql.execution.QueryExecution.$anonfun$lazyCommandExecuted$1(QueryExecution.scala:1212)
+	at scala.util.Try$.apply(Try.scala:217)
+	at org.apache.spark.util.Utils$.doTryWithCallerStacktrace(Utils.scala:1798)
+	at org.apache.spark.util.Utils$.getTryWithCallerStacktrace(Utils.scala:1848)
+	at org.apache.spark.util.LazyTry.get(LazyTry.scala:78)
+	at org.apache.spark.sql.execution.QueryExecution.$anonfun$commandExecuted$1(QueryExecution.scala:1218)
+	at org.apache.spark.sql.execution.QueryExecution.withAbortTransactionOnFailure(QueryExecution.scala:2304)
+	at org.apache.spark.sql.execution.QueryExecution.commandExecuted(QueryExecution.scala:1218)
+	at org.apache.spark.sql.execution.QueryExecution.assertCommandExecuted(QueryExecution.scala:1369)
+	at org.apache.spark.sql.classic.DataFrameWriter.runCommand(DataFrameWriter.scala:978)
+	at org.apache.spark.sql.classic.DataFrameWriter.saveAsTable(DataFrameWriter.scala:789)
+	at org.apache.spark.sql.classic.DataFrameWriter.saveAsTable(DataFrameWriter.scala:667)
+	at org.apache.spark.sql.connect.planner.SparkConnectPlanner.handleWriteOperation(SparkConnectPlanner.scala:4939)
+	at org.apache.spark.sql.connect.planner.SparkConnectPlanner.process(SparkConnectPlanner.scala:3938)
+	at org.apache.spark.sql.connect.execution.ExecuteThreadRunner.$anonfun$handleCommand$1(ExecuteThreadRunner.scala:574)
+	at scala.runtime.java8.JFunction0$mcV$sp.apply(JFunction0$mcV$sp.scala:18)
+	at org.apache.spark.sql.execution.SQLExecution$.withPreExecutionPhaseWatch(SQLExecution.scala:2179)
+	at org.apache.spark.sql.connect.execution.ExecuteThreadRunner.withPreExecutionPhaseWatch(ExecuteThreadRunner.scala:553)
+	at org.apache.spark.sql.connect.execution.ExecuteThreadRunner.handleCommand(ExecuteThreadRunner.scala:574)
+	at org.apache.spark.sql.connect.execution.ExecuteThreadRunner.$anonfun$executeInternal$15(ExecuteThreadRunner.scala:442)
+	at scala.runtime.java8.JFunction0$mcV$sp.apply(JFunction0$mcV$sp.scala:18)
+	at com.databricks.util.LexicalThreadLocal$Handle.runWith(LexicalThreadLocal.scala:63)
+	at org.apache.spark.sql.connect.execution.SparkConnectUdfRejectionScope$.withExecutionSideEffectScope(SparkConnectUdfRejectionScope.scala:31)
+	at org.apache.spark.sql.connect.execution.ExecuteThreadRunner.$anonfun$executeInternal$1(ExecuteThreadRunner.scala:441)
+	at org.apache.spark.sql.connect.execution.ExecuteThreadRunner.$anonfun$executeInternal$1$adapted(ExecuteThreadRunner.scala:348)
+	at org.apache.spark.sql.connect.service.SessionHolder.$anonfun$withSession$2(SessionHolder.scala:962)
+	at org.apache.spark.sql.SparkSession.withActive(SparkSession.scala:881)
+	at org.apache.spark.sql.connect.service.SessionHolder.$anonfun$withSession$1(SessionHolder.scala:962)
+	at org.apache.spark.JobArtifactSet$.withActiveJobArtifactState(JobArtifactSet.scala:97)
+	at org.apache.spark.sql.artifact.ArtifactManager.$anonfun$withResources$1(ArtifactManager.scala:142)
+	at org.apache.spark.sql.artifact.ArtifactManager.withClassLoaderIfNeeded(ArtifactManager.scala:136)
+	at org.apache.spark.sql.artifact.ArtifactManager.withResources(ArtifactManager.scala:141)
+	at org.apache.spark.sql.connect.service.SessionHolder.withSession(SessionHolder.scala:961)
+	at org.apache.spark.sql.connect.execution.ExecuteThreadRunner.executeInternal(ExecuteThreadRunner.scala:348)
+	at org.apache.spark.sql.connect.execution.ExecuteThreadRunner.$anonfun$execute$1(ExecuteThreadRunner.scala:204)
+	at scala.runtime.java8.JFunction0$mcV$sp.apply(JFunction0$mcV$sp.scala:18)
+	at com.databricks.spark.connect.service.UtilizationMetrics.recordActiveQueries(UtilizationMetrics.scala:102)
+	at com.databricks.spark.connect.service.UtilizationMetrics.recordActiveQueries$(UtilizationMetrics.scala:99)
+	at org.apache.spark.sql.connect.execution.ExecuteThreadRunner.recordActiveQueries(ExecuteThreadRunner.scala:63)
+	at org.apache.spark.sql.connect.execution.ExecuteThreadRunner.org$apache$spark$sql$connect$execution$ExecuteThreadRunner$$execute(ExecuteThreadRunner.scala:196)
+	at org.apache.spark.sql.connect.execution.ExecuteThreadRunner$ExecutionThread.$anonfun$run$3(ExecuteThreadRunner.scala:647)
+	at scala.runtime.java8.JFunction0$mcV$sp.apply(JFunction0$mcV$sp.scala:18)
+	at com.databricks.spark.util.DBRTracing$.withSpanFromParent(DBRTracing.scala:70)
+	at org.apache.spark.sql.connect.execution.ExecuteThreadRunner$ExecutionThread.$anonfun$run$2(ExecuteThreadRunner.scala:647)
+	at scala.runtime.java8.JFunction0$mcV$sp.apply(JFunction0$mcV$sp.scala:18)
+	at com.databricks.unity.UCSEphemeralState$Handle.runWith(UCSEphemeralState.scala:51)
+	at com.databricks.unity.HandleImpl.runWith(UCSHandle.scala:138)
+	at com.databricks.unity.HandleImpl.$anonfun$runWithAndClose$1(UCSHandle.scala:147)
+	at scala.util.Using$.resource(Using.scala:296)
+	at com.databricks.unity.HandleImpl.runWithAndClose(UCSHandle.scala:146)
+	at org.apache.spark.sql.connect.execution.ExecuteThreadRunner$ExecutionThread.run(ExecuteThreadRunner.scala:646)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/spark-553d2f9c-0bd1-47b4-8d8b-5c/.ipykernel/62/command-4671809534913544-3566803928", line 52, in main
+    pipeline.run(config=config)
+  File "/Workspace/Users/rm372054@fiap.com.br/tesouro-transparente-pipeline/src/pipeline/pipeline.py", line 72, in run
+    self.data_handler.write_delta(
+  File "/Workspace/Users/rm372054@fiap.com.br/tesouro-transparente-pipeline/src/io_utils/data_handler.py", line 119, in write_delta
+    raise WriteDeltaException(
+io_utils.exceptions.WriteDeltaException: Falha ao escrever a tabela em '`tesouro_transparente_pipeline`.`silver`.tesouro_transparente_silver'
+2026-10-29 13:35:09 - __main__ - INFO - Pipeline finalizado com sucesso!
+2026-10-29 17:17:31 - config.settings - INFO - Logging configurado com sucesso via YAML.
+2026-10-29 17:17:31 - __main__ - INFO - Iniciando o job: Analise Titulos Tesouro Direto
+2026-10-29 17:17:31 - pipeline.pipeline - INFO - Pipeline iniciado...
+2026-10-29 17:17:31 - pipeline.pipeline - INFO - 
+            Obtido os seguintes paths:
+            bronze =  /Volumes/tesouro_transparente_pipeline/bronze/raw_data
+            silver =  `tesouro_transparente_pipeline`.`silver`
+            gold   =  `tesouro_transparente_pipeline`.`gold`
+            
+2026-10-29 17:17:31 - pipeline.pipeline - INFO - Iniciando validação de ambiente da camada bronze no caminho /Volumes/tesouro_transparente_pipeline/bronze/raw_data
+2026-10-29 17:17:34 - pipeline.pipeline - INFO - Camada bronze validada com sucesso!
+2026-10-29 17:17:34 - pipeline.pipeline - INFO - Lendo dados Parquet de: /Volumes/tesouro_transparente_pipeline/bronze/raw_data
+2026-10-29 17:17:44 - pyspark.sql.connect.logging - WARNING - Effective usage policy for this session is cct.Chlub3RlYm9va3MvOTU3MjcxMzIyOTIwMjkzEAEgATIkMDFhMTg4YWEtOGY0OS03ZDY2LTkwN2QtM2Q4ZTg0ZDU3ZDAxOiRhNmMyNjY4My02NGI4LTM3ZjQtODE2Zi1jMGVlNzUyZjhmZjhKDAih/43XBhDAtLKiAlABWAFgAWj+2J7AlsWjDYgBAA==.
+2026-10-29 17:17:44 - pyspark.sql.connect.logging - WARNING - Effective usage policy for this session is cct.Chlub3RlYm9va3MvOTU3MjcxMzIyOTIwMjkzEAEgATIkMDFhMTg4YWEtOGY0OS03ZDY2LTkwN2QtM2Q4ZTg0ZDU3ZDAxOiRhNmMyNjY4My02NGI4LTM3ZjQtODE2Zi1jMGVlNzUyZjhmZjhKDAih/43XBhDAtLKiAlABWAFgAWj+2J7AlsWjDYgBAA==.
+2026-10-29 17:17:53 - pipeline.pipeline - INFO - Dados da camada bronze lidos com sucesso do caminho /Volumes/tesouro_transparente_pipeline/bronze/raw_data
+2026-10-29 17:17:59 - pipeline.pipeline - INFO - Data Quality: {'total_registros': 3716718, 'taxas_fora_range': 107415, 'pu_negativo': 0, 'data_base_futura': 0, 'nulos_campos_criticos': 0, 'duplicatas': 177434}
+2026-10-29 17:17:59 - pipeline.pipeline - INFO - Salvando a tabela tesouro_transparente_silver...
+2026-10-29 17:20:06 - pipeline.pipeline - INFO - Tabela tesouro_transparente_silver salva com sucesso!
+2026-10-29 17:20:06 - pipeline.pipeline - INFO - Salvando a tabela dim_titulo...
+2026-10-29 17:20:10 - pipeline.pipeline - INFO - Tabela dim_titulo salva com sucesso!
+2026-10-29 17:20:10 - pipeline.pipeline - INFO - Salvando a tabela fct_precos_taxas...
+2026-10-29 17:22:03 - pipeline.pipeline - INFO - Tabela fct_precos_taxas salva com sucesso!
+2026-10-29 17:22:03 - pipeline.pipeline - INFO - Salvando a tabela stg_zero_cupom...
+2026-10-29 17:22:28 - __main__ - INFO - Pipeline finalizado com sucesso!
+2026-10-29 17:23:48 - config.settings - INFO - Logging configurado com sucesso via YAML.
+2026-10-29 17:23:48 - __main__ - INFO - Iniciando o job: Analise Titulos Tesouro Direto
+2026-10-29 17:23:48 - pipeline.pipeline - INFO - Pipeline iniciado...
+2026-10-29 17:23:48 - pipeline.pipeline - INFO - 
+            Obtido os seguintes paths:
+            bronze =  /Volumes/tesouro_transparente_pipeline/bronze/raw_data
+            silver =  `tesouro_transparente_pipeline`.`silver`
+            gold   =  `tesouro_transparente_pipeline`.`gold`
+            
+2026-10-29 17:23:48 - pipeline.pipeline - INFO - Iniciando validação de ambiente da camada bronze no caminho /Volumes/tesouro_transparente_pipeline/bronze/raw_data
+2026-10-29 17:23:48 - pipeline.pipeline - INFO - Camada bronze validada com sucesso!
+2026-10-29 17:23:48 - pipeline.pipeline - INFO - Lendo dados Parquet de: /Volumes/tesouro_transparente_pipeline/bronze/raw_data
+2026-10-29 17:23:48 - pipeline.pipeline - INFO - Dados da camada bronze lidos com sucesso do caminho /Volumes/tesouro_transparente_pipeline/bronze/raw_data
+2026-10-29 17:23:50 - pipeline.pipeline - INFO - Data Quality: {'total_registros': 3716718, 'taxas_fora_range': 107415, 'pu_negativo': 0, 'data_base_futura': 0, 'nulos_campos_criticos': 0, 'duplicatas': 177434}
+2026-10-29 17:23:50 - pipeline.pipeline - INFO - Salvando a tabela tesouro_transparente_silver...
+2026-10-29 17:25:38 - pipeline.pipeline - INFO - Tabela tesouro_transparente_silver salva com sucesso!
+2026-10-29 17:25:38 - pipeline.pipeline - INFO - Salvando a tabela dim_titulo...
+2026-10-29 17:25:40 - pipeline.pipeline - INFO - Tabela dim_titulo salva com sucesso!
+2026-10-29 17:25:40 - pipeline.pipeline - INFO - Salvando a tabela fct_precos_taxas...
+2026-10-29 17:26:54 - __main__ - INFO - Pipeline finalizado com sucesso!
+2026-10-29 17:27:24 - config.settings - INFO - Logging configurado com sucesso via YAML.
+2026-10-29 17:27:24 - __main__ - INFO - Iniciando o job: Analise Titulos Tesouro Direto
+2026-10-29 17:27:24 - pipeline.pipeline - INFO - Pipeline iniciado...
+2026-10-29 17:27:24 - pipeline.pipeline - INFO - 
+            Obtido os seguintes paths:
+            bronze =  /Volumes/tesouro_transparente_pipeline/bronze/raw_data
+            silver =  `tesouro_transparente_pipeline`.`silver`
+            gold   =  `tesouro_transparente_pipeline`.`gold`
+            
+2026-10-29 17:27:24 - pipeline.pipeline - INFO - Iniciando validação de ambiente da camada bronze no caminho /Volumes/tesouro_transparente_pipeline/bronze/raw_data
+2026-10-29 17:27:25 - pipeline.pipeline - INFO - Camada bronze validada com sucesso!
+2026-10-29 17:27:25 - pipeline.pipeline - INFO - Lendo dados Parquet de: /Volumes/tesouro_transparente_pipeline/bronze/raw_data
+2026-10-29 17:27:25 - pipeline.pipeline - INFO - Dados da camada bronze lidos com sucesso do caminho /Volumes/tesouro_transparente_pipeline/bronze/raw_data
+2026-10-29 17:27:27 - pipeline.pipeline - INFO - Data Quality: {'total_registros': 3716718, 'taxas_fora_range': 107415, 'pu_negativo': 0, 'data_base_futura': 0, 'nulos_campos_criticos': 0, 'duplicatas': 177434}
+2026-10-29 17:27:27 - pipeline.pipeline - INFO - Salvando a tabela tesouro_transparente_silver...
+2026-10-29 17:29:06 - pipeline.pipeline - INFO - Tabela tesouro_transparente_silver salva com sucesso!
+2026-10-29 17:29:06 - pipeline.pipeline - INFO - Salvando a tabela dim_titulo...
+2026-10-29 17:29:09 - pipeline.pipeline - INFO - Tabela dim_titulo salva com sucesso!
+2026-10-29 17:29:09 - pipeline.pipeline - INFO - Salvando a tabela fct_precos_taxas...
+2026-10-29 17:30:43 - pipeline.pipeline - INFO - Tabela fct_precos_taxas salva com sucesso!
+2026-10-29 17:30:43 - pipeline.pipeline - INFO - Salvando a tabela stg_zero_cupom...
+2026-10-29 17:32:34 - pipeline.pipeline - INFO - Tabela stg_zero_cupom salva com sucesso!
+2026-10-29 17:32:36 - pipeline.pipeline - INFO - Salvando a tabela dim_data...
+2026-10-29 17:32:40 - pipeline.pipeline - INFO - Tabela dim_data salva com sucesso!
+2026-10-29 17:32:40 - pipeline.pipeline - INFO - Salvando a tabela fct_curva_juros_vertices...
+2026-10-29 17:33:54 - __main__ - INFO - Pipeline finalizado com sucesso!
+2026-10-29 17:45:35 - config.settings - INFO - Logging configurado com sucesso via YAML.
+2026-10-29 17:45:35 - __main__ - INFO - Iniciando o job: Analise Titulos Tesouro Direto
+2026-10-29 17:45:35 - pipeline.pipeline - INFO - Pipeline iniciado...
+2026-10-29 17:45:35 - pipeline.pipeline - INFO - 
+            Obtido os seguintes paths:
+            bronze =  /Volumes/tesouro_transparente_pipeline/bronze/raw_data
+            silver =  `tesouro_transparente_pipeline`.`silver`
+            gold   =  `tesouro_transparente_pipeline`.`gold`
+            
+2026-10-29 17:45:35 - pipeline.pipeline - INFO - Iniciando validação de ambiente da camada bronze no caminho /Volumes/tesouro_transparente_pipeline/bronze/raw_data
+2026-10-29 17:45:35 - pipeline.pipeline - INFO - Camada bronze validada com sucesso!
+2026-10-29 17:45:35 - pipeline.pipeline - INFO - Lendo dados Parquet de: /Volumes/tesouro_transparente_pipeline/bronze/raw_data
+2026-10-29 17:45:36 - pipeline.pipeline - INFO - Dados da camada bronze lidos com sucesso do caminho /Volumes/tesouro_transparente_pipeline/bronze/raw_data
+2026-10-29 17:45:38 - pipeline.pipeline - INFO - Data Quality: {'total_registros': 3716718, 'taxas_fora_range': 107415, 'pu_negativo': 0, 'data_base_futura': 0, 'nulos_campos_criticos': 0, 'duplicatas': 177434}
+2026-10-29 17:45:38 - pipeline.pipeline - INFO - Salvando a tabela tesouro_transparente_silver...
+2026-10-29 17:47:26 - pipeline.pipeline - INFO - Tabela tesouro_transparente_silver salva com sucesso!
+2026-10-29 17:47:26 - pipeline.pipeline - INFO - Salvando a tabela dim_titulo...
+2026-10-29 17:47:30 - pipeline.pipeline - INFO - Tabela dim_titulo salva com sucesso!
+2026-10-29 17:47:30 - pipeline.pipeline - INFO - Salvando a tabela fct_precos_taxas...
+2026-10-29 17:48:00 - __main__ - INFO - Pipeline finalizado com sucesso!
+2026-10-29 17:51:43 - config.settings - INFO - Logging configurado com sucesso via YAML.
+2026-10-29 17:51:43 - __main__ - INFO - Iniciando o job: Analise Titulos Tesouro Direto
+2026-10-29 17:51:43 - pipeline.pipeline - INFO - Pipeline iniciado...
+2026-10-29 17:51:43 - pipeline.pipeline - INFO - 
+            Obtido os seguintes paths:
+            bronze =  /Volumes/tesouro_transparente_pipeline/bronze/raw_data
+            silver =  `tesouro_transparente_pipeline`.`silver`
+            gold   =  `tesouro_transparente_pipeline`.`gold`
+            
+2026-10-29 17:51:43 - pipeline.pipeline - INFO - Iniciando validação de ambiente da camada bronze no caminho /Volumes/tesouro_transparente_pipeline/bronze/raw_data
+2026-10-29 17:51:43 - pipeline.pipeline - INFO - Camada bronze validada com sucesso!
+2026-10-29 17:51:43 - pipeline.pipeline - INFO - Lendo dados Parquet de: /Volumes/tesouro_transparente_pipeline/bronze/raw_data
+2026-10-29 17:51:44 - pipeline.pipeline - INFO - Dados da camada bronze lidos com sucesso do caminho /Volumes/tesouro_transparente_pipeline/bronze/raw_data
+2026-10-29 17:51:46 - pipeline.pipeline - INFO - Data Quality: {'total_registros': 3716718, 'taxas_fora_range': 107415, 'pu_negativo': 0, 'data_base_futura': 0, 'nulos_campos_criticos': 0, 'duplicatas': 177434}
+2026-10-29 17:51:46 - pipeline.pipeline - INFO - Salvando a tabela tesouro_transparente_silver...
+2026-10-29 17:51:52 - pipeline.pipeline - INFO - Tabela tesouro_transparente_silver salva com sucesso!
+2026-10-29 17:51:52 - pipeline.pipeline - INFO - Salvando a tabela dim_titulo...
+2026-10-29 17:51:54 - pipeline.pipeline - INFO - Tabela dim_titulo salva com sucesso!
+2026-10-29 17:51:54 - pipeline.pipeline - INFO - Salvando a tabela fct_precos_taxas...
+2026-10-29 17:52:01 - pipeline.pipeline - INFO - Tabela fct_precos_taxas salva com sucesso!
+2026-10-29 17:52:01 - pipeline.pipeline - INFO - Salvando a tabela stg_zero_cupom...
+2026-10-29 17:52:05 - pipeline.pipeline - INFO - Tabela stg_zero_cupom salva com sucesso!
+2026-10-29 17:52:07 - pipeline.pipeline - INFO - Salvando a tabela dim_data...
+2026-10-29 17:52:10 - pipeline.pipeline - INFO - Tabela dim_data salva com sucesso!
+2026-10-29 17:52:10 - pipeline.pipeline - INFO - Salvando a tabela fct_curva_juros_vertices...
+2026-10-29 17:52:14 - pipeline.pipeline - INFO - Tabela fct_curva_juros_vertices salva com sucesso!
+2026-10-29 17:52:14 - pipeline.pipeline - INFO - Salvando tabela fct_inflacao_implicita...
+2026-10-29 17:52:18 - pipeline.pipeline - INFO - Tabela fct_inflacao_implicita salva com sucesso!
+2026-10-29 17:52:18 - pipeline.pipeline - INFO - Salvando a tabela fct_risco_titulo...
+2026-10-29 17:52:22 - pipeline.pipeline - INFO - Tabela fct_risco_titulo salva com sucesso!
+2026-10-29 17:52:22 - pipeline.pipeline - INFO - Salvando a tabela fct_sinais_mercado...
+2026-10-29 17:52:33 - pipeline.pipeline - INFO - Tabela fct_sinais_mercado salva com sucesso!
+2026-10-29 17:52:33 - pipeline.pipeline - INFO - Salvando a tabela fct_inclinacao_curva...
+2026-10-29 17:52:38 - pipeline.pipeline - INFO - Tabela fct_inclinacao_curva salva com sucesso!
+2026-10-29 17:52:38 - pipeline.pipeline - INFO - Pipeline concluído com sucesso! Duração: 55.01s.
+2026-10-29 17:52:38 - __main__ - INFO - Pipeline finalizado com sucesso!
+2026-10-29 18:45:22 - config.settings - INFO - Logging configurado com sucesso via YAML.
+2026-10-29 18:45:22 - __main__ - INFO - Iniciando o job: Analise Titulos Tesouro Direto
+2026-10-29 18:45:22 - pipeline.pipeline - INFO - Pipeline iniciado...
+2026-10-29 18:45:22 - pipeline.pipeline - INFO - 
+            Obtido os seguintes paths:
+            bronze =  /Volumes/tesouro_transparente_pipeline/bronze/raw_data
+            silver =  `tesouro_transparente_pipeline`.`silver`
+            gold   =  `tesouro_transparente_pipeline`.`gold`
+            
+2026-10-29 18:45:22 - pipeline.pipeline - INFO - Iniciando validação de ambiente da camada bronze no caminho /Volumes/tesouro_transparente_pipeline/bronze/raw_data
+2026-10-29 18:45:25 - pipeline.pipeline - INFO - Camada bronze validada com sucesso!
+2026-10-29 18:45:25 - pipeline.pipeline - INFO - Lendo dados Parquet de: /Volumes/tesouro_transparente_pipeline/bronze/raw_data
+2026-10-29 18:45:35 - pyspark.sql.connect.logging - WARNING - Effective usage policy for this session is cct.Chlub3RlYm9va3MvOTU3MjcxMzIyOTIwMjkzEAEgATIkMDFhMTg4ZmItMDA1Mi03YzA0LWI5MTUtNTgwYzExNjUzMzlkOiRhNmMyNjY4My02NGI4LTM3ZjQtODE2Zi1jMGVlNzUyZjhmZjhKDAi5qI7XBhCA/ZDLAVABWAFgAWj+2J7AlsWjDYgBAA==.
+2026-10-29 18:45:44 - pipeline.pipeline - INFO - Dados da camada bronze lidos com sucesso do caminho /Volumes/tesouro_transparente_pipeline/bronze/raw_data
+2026-10-29 18:45:48 - pipeline.pipeline - INFO - Data Quality: {'total_registros': 3716718, 'taxas_fora_range': 107415, 'pu_negativo': 0, 'data_base_futura': 0, 'nulos_campos_criticos': 0, 'duplicatas': 177434}
+2026-10-29 18:45:48 - pipeline.pipeline - INFO - Salvando a tabela tesouro_transparente_silver...
+2026-10-29 18:46:01 - pipeline.pipeline - INFO - Tabela tesouro_transparente_silver salva com sucesso!
+2026-10-29 18:46:01 - pipeline.pipeline - INFO - Salvando a tabela dim_titulo...
+2026-10-29 18:46:05 - pipeline.pipeline - INFO - Tabela dim_titulo salva com sucesso!
+2026-10-29 18:46:05 - pipeline.pipeline - INFO - Salvando a tabela fct_precos_taxas...
+2026-10-29 18:46:12 - pipeline.pipeline - INFO - Tabela fct_precos_taxas salva com sucesso!
+2026-10-29 18:46:12 - pipeline.pipeline - INFO - Salvando a tabela stg_zero_cupom...
+2026-10-29 18:46:18 - pipeline.pipeline - INFO - Tabela stg_zero_cupom salva com sucesso!
+2026-10-29 18:46:20 - pipeline.pipeline - INFO - Salvando a tabela dim_data...
+2026-10-29 18:46:24 - pipeline.pipeline - INFO - Tabela dim_data salva com sucesso!
+2026-10-29 18:46:24 - pipeline.pipeline - INFO - Salvando a tabela fct_curva_juros_vertices...
+2026-10-29 18:46:29 - pipeline.pipeline - INFO - Tabela fct_curva_juros_vertices salva com sucesso!
+2026-10-29 18:46:29 - pipeline.pipeline - INFO - Salvando tabela fct_inflacao_implicita...
+2026-10-29 18:46:34 - pipeline.pipeline - INFO - Tabela fct_inflacao_implicita salva com sucesso!
+2026-10-29 18:46:34 - pipeline.pipeline - INFO - Salvando a tabela fct_risco_titulo...
+2026-10-29 18:46:37 - pipeline.pipeline - INFO - Tabela fct_risco_titulo salva com sucesso!
+2026-10-29 18:46:37 - pipeline.pipeline - INFO - Salvando a tabela fct_sinais_mercado...
+2026-10-29 18:46:48 - pipeline.pipeline - INFO - Tabela fct_sinais_mercado salva com sucesso!
+2026-10-29 18:46:48 - pipeline.pipeline - INFO - Salvando a tabela fct_inclinacao_curva...
+2026-10-29 18:46:53 - pipeline.pipeline - INFO - Tabela fct_inclinacao_curva salva com sucesso!
+2026-10-29 18:46:53 - pipeline.pipeline - INFO - Pipeline concluído com sucesso! Duração: 90.51s.
+2026-10-29 18:46:53 - __main__ - INFO - Pipeline finalizado com sucesso!
