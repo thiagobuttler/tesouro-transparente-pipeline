@@ -4,8 +4,9 @@ import logging
 import time
 from io_utils.data_handler import DataHandler
 from processing.transformations import Transformation
-from pyspark.sql import SparkSession
+from pyspark.sql import SparkSession, DataFrame
 from io_utils.validator import EnvironmentValidator
+from quality.quality import DataQuality
 
 logger = logging.getLogger(__name__)
 
@@ -20,10 +21,12 @@ class Pipeline:
         spark: SparkSession,
         data_handler: DataHandler,
         transformer: Transformation,
+        quality: DataQuality,
     ):
         self.spark = spark
         self.data_handler = data_handler
         self.transformer = transformer
+        self.quality = quality
 
     def run(self, config):
         """
@@ -50,42 +53,57 @@ class Pipeline:
             """
         )
 
-        # Valida a existência do caminho de leitura (camada bronze) no Volume do Unity Catalog antes de iniciar o pipeline.
+        # Pre-flight: valida o caminho do Volume da camada bronze antes de iniciar o pipeline.
         logger.info(f"Iniciando validação de ambiente da camada bronze no caminho {volume_path_bronze}")
         validator.validate_volume_path(volume_path_bronze)
         logger.info("Camada bronze validada com sucesso!")
 
+        # Orquestra o pipeline por camadas: bronze -> silver -> gold.
+        bronze = self.transform_bronze(volume_path_bronze=volume_path_bronze)
+        silver = self.transform_silver(bronze=bronze, schema_silver=schema_silver)
+        self.transform_gold(silver=silver, schema_silver=schema_silver, schema_gold=schema_gold)
+
+        logger.info(f"Pipeline concluído com sucesso! Duração: {round(time.time() - t0, 2)}s.")
+
+    def transform_bronze(self, volume_path_bronze: str) -> DataFrame:
+        """Carrega os dados brutos (Parquet) da camada bronze no Volume do Unity Catalog e retorna o DataFrame da camada."""
+
         # Leitura dos arquivos Parquet na camada bronze (dados brutos ingressados no Volume do Unity Catalog).
         logger.info(f"Lendo dados Parquet de: {volume_path_bronze}")
-        tesouro_transparente_bronze = self.data_handler.load_tesouro_transparente(
+        bronze = self.data_handler.load_tesouro_transparente(
             path=volume_path_bronze
         )
         logger.info(f"Dados da camada bronze lidos com sucesso do caminho {volume_path_bronze}")
 
-        # Aplica as transformações de limpeza, padronização e enriquecimento para gerar o DataFrame da camada silver.
-        tesouro_transparente_silver = self.transformer.transform_silver(
-            df=tesouro_transparente_bronze
-        )
+        return bronze
 
-        # Executa validações de qualidade de dados (Data Quality) sobre a camada silver.
-        dq = self.transformer.validate_data_quality(tesouro_transparente_silver)
+    def transform_silver(self, bronze: DataFrame, schema_silver: str) -> DataFrame:
+        """Padroniza o schema dos dados da bronze, executa o check de Data Quality (apenas informativo) e persiste a tabela da camada silver."""
+        silver = self.transformer.transform_silver(df=bronze)
+
+        # Executa validações de qualidade de dados (Data Quality) sobre a camada silver — apenas informativo, sem interromper o fluxo.
+        dq = self.quality.validate_data_quality(silver)
         logger.info(f"Data Quality: {dq}")
 
         # Persiste o DataFrame da camada silver em formato Delta Lake, criando a tabela gerenciada tesouro_transparente_silver.
         logger.info("Salvando a tabela tesouro_transparente_silver...")
         self.data_handler.write_delta(
-            df=tesouro_transparente_silver,
+            df=silver,
             path=schema_silver,
             table_name="tesouro_transparente_silver",
         )
         logger.info(f"Tabela tesouro_transparente_silver salva com sucesso!")
+        return silver
+
+    def transform_gold(self, silver: DataFrame, schema_silver: str, schema_gold: str) -> None:
+        """Constrói e persiste as tabelas dimensionais e de fatos da camada gold a partir da camada silver."""
 
         # ---------------------------------------------------------------------------
         # Construção das tabelas analíticas da camada Gold (esquema dimensional)
         # ---------------------------------------------------------------------------
 
         # Cria a dimensão de títulos (dim_titulo) a partir dos dados tratados da camada silver.
-        dim_titulo = self.transformer.create_dim_titulo(tesouro_transparente_silver)
+        dim_titulo = self.transformer.create_dim_titulo(silver)
 
         # Persiste a tabela de dimensão dim_titulo na camada gold em formato Delta Lake.
         logger.info("Salvando a tabela dim_titulo...")
@@ -95,9 +113,7 @@ class Pipeline:
         logger.info("Tabela dim_titulo salva com sucesso!")
 
         # Cria a tabela de fatos de preços e taxas (fct_precos_taxas) a partir dos dados da camada silver.
-        fct_precos_taxas = self.transformer.create_fct_precos_taxas(
-            tesouro_transparente_silver
-        )
+        fct_precos_taxas = self.transformer.create_fct_precos_taxas(silver)
 
         # Persiste a tabela de fatos fct_precos_taxas na camada gold em formato Delta Lake.
         logger.info("Salvando a tabela fct_precos_taxas...")
@@ -197,4 +213,4 @@ class Pipeline:
         )
         logger.info("Tabela fct_inclinacao_curva salva com sucesso!")
 
-        logger.info(f"Pipeline concluído com sucesso! Duração: {round(time.time() - t0, 2)}s.")
+        logger.info("Camada gold construída e persistida com sucesso!")

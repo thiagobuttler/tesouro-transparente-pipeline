@@ -17,6 +17,7 @@ from io_utils.validator import EnvironmentValidator
 from config.settings import carregar_config, configurar_logging
 from io_utils.data_handler import DataHandler
 from processing.transformations import Transformation
+from quality.quality import DataQuality
 from pipeline.pipeline import Pipeline
 from io_utils.exceptions import (
     LoadTesouroTransparenteException,
@@ -47,8 +48,11 @@ def main():
         # Instancia o Transformation, responsável pelas regras de transformação entre as camadas.
         transformer = Transformation()
 
+        # Instancia o DataQuality, responsável pelas validações de qualidade de dados sobre a camada silver.
+        quality = DataQuality()
+
         # Instancia o Pipeline, responsável pela orquestração a execução das transformações do pipeline (Injeção de dependências).
-        pipeline = Pipeline(spark=spark, data_handler=dh, transformer=transformer)
+        pipeline = Pipeline(spark=spark, data_handler=dh, transformer=transformer, quality=quality)
         pipeline.run(config=config)
 
     except LoadTesouroTransparenteException as e:
@@ -83,7 +87,7 @@ def main():
     finally:
         # A sessão Spark NÃO é encerrada manualmente, pois sua ciclo de vida é gerenciado pelo runtime do Databricks.
         # spark.stop()
-        logger.info("Pipeline finalizado com sucesso!")
+        logger.info("Pipeline finalizado.")
 
 
 if __name__ == "__main__":

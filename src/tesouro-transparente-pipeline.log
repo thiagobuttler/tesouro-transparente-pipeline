@@ -2416,3 +2416,82 @@ io_utils.exceptions.WriteDeltaException: Falha ao escrever a tabela em '`tesouro
 2026-10-29 18:46:53 - pipeline.pipeline - INFO - Tabela fct_inclinacao_curva salva com sucesso!
 2026-10-29 18:46:53 - pipeline.pipeline - INFO - Pipeline concluído com sucesso! Duração: 90.51s.
 2026-10-29 18:46:53 - __main__ - INFO - Pipeline finalizado com sucesso!
+2026-10-31 12:46:28 - config.settings - INFO - Logging configurado com sucesso via YAML.
+2026-10-31 12:46:28 - __main__ - INFO - Iniciando o job: Analise Titulos Tesouro Direto
+2026-10-31 12:46:28 - pipeline.pipeline - INFO - Pipeline iniciado...
+2026-10-31 12:46:38 - pyspark.sql.connect.logging - WARNING - Effective usage policy for this session is cct.Chlub3RlYm9va3MvOTU3MjcxMzIyOTIwMjkzEAEgATIkMDFhMTkxZmYtMTIxNi03ZjdmLTk3MTctNWFlYWU3YjY0MzQ5OiRhNmMyNjY4My02NGI4LTM3ZjQtODE2Zi1jMGVlNzUyZjhmZjhKCwiXxpfXBhCAl8gdUAFYAWABaP7YnsCWxaMNiAEA.
+2026-10-31 12:46:38 - pyspark.sql.connect.logging - WARNING - Effective usage policy for this session is cct.Chlub3RlYm9va3MvOTU3MjcxMzIyOTIwMjkzEAEgATIkMDFhMTkxZmYtMTIxNi03ZjdmLTk3MTctNWFlYWU3YjY0MzQ5OiRhNmMyNjY4My02NGI4LTM3ZjQtODE2Zi1jMGVlNzUyZjhmZjhKCwiXxpfXBhCAl8gdUAFYAWABaP7YnsCWxaMNiAEA.
+2026-10-31 12:46:46 - pipeline.pipeline - INFO - 
+            Paths obtidos e schemas validados:
+            bronze =  /Volumes/tesouro_transparente_pipeline/bronze/raw_data
+            silver =  `tesouro_transparente_pipeline`.`silver`
+            gold   =  `tesouro_transparente_pipeline`.`gold`
+            
+2026-10-31 12:46:46 - pipeline.pipeline - INFO - Iniciando validação de ambiente da camada bronze no caminho /Volumes/tesouro_transparente_pipeline/bronze/raw_data
+2026-10-31 12:46:47 - io_utils.validator - INFO - [Pre-Flight Check] Volume validado com sucesso. Arquivos detectados: 21
+2026-10-31 12:46:47 - pipeline.pipeline - INFO - Camada bronze validada com sucesso!
+2026-10-31 12:46:47 - pipeline.pipeline - INFO - Lendo dados Parquet de: /Volumes/tesouro_transparente_pipeline/bronze/raw_data
+2026-10-31 12:46:52 - pipeline.pipeline - INFO - Dados da camada bronze lidos com sucesso do caminho /Volumes/tesouro_transparente_pipeline/bronze/raw_data
+2026-10-31 12:46:56 - pipeline.pipeline - INFO - Data Quality: {'total_registros': 3716718, 'taxas_fora_range': 107415, 'pu_negativo': 0, 'data_base_futura': 0, 'nulos_campos_criticos': 0, 'duplicatas': 177434}
+2026-10-31 12:46:56 - pipeline.pipeline - INFO - Salvando a tabela tesouro_transparente_silver...
+2026-10-31 12:47:06 - pipeline.pipeline - INFO - Tabela tesouro_transparente_silver salva com sucesso!
+2026-10-31 12:47:06 - pipeline.pipeline - INFO - Salvando a tabela dim_titulo...
+2026-10-31 12:47:10 - pipeline.pipeline - INFO - Tabela dim_titulo salva com sucesso!
+2026-10-31 12:47:10 - pipeline.pipeline - INFO - Salvando a tabela fct_precos_taxas...
+2026-10-31 12:47:17 - pipeline.pipeline - INFO - Tabela fct_precos_taxas salva com sucesso!
+2026-10-31 12:47:17 - pipeline.pipeline - INFO - Salvando a tabela stg_zero_cupom...
+2026-10-31 12:47:23 - pipeline.pipeline - INFO - Tabela stg_zero_cupom salva com sucesso!
+2026-10-31 12:47:25 - pipeline.pipeline - INFO - Salvando a tabela dim_data...
+2026-10-31 12:47:30 - pipeline.pipeline - INFO - Tabela dim_data salva com sucesso!
+2026-10-31 12:47:30 - pipeline.pipeline - INFO - Salvando a tabela fct_curva_juros_vertices...
+2026-10-31 12:47:34 - pipeline.pipeline - INFO - Tabela fct_curva_juros_vertices salva com sucesso!
+2026-10-31 12:47:34 - pipeline.pipeline - INFO - Salvando tabela fct_inflacao_implicita...
+2026-10-31 12:47:40 - pipeline.pipeline - INFO - Tabela fct_inflacao_implicita salva com sucesso!
+2026-10-31 12:47:40 - pipeline.pipeline - INFO - Salvando a tabela fct_risco_titulo...
+2026-10-31 12:47:43 - pipeline.pipeline - INFO - Tabela fct_risco_titulo salva com sucesso!
+2026-10-31 12:47:43 - pipeline.pipeline - INFO - Salvando a tabela fct_sinais_mercado...
+2026-10-31 12:47:54 - pipeline.pipeline - INFO - Tabela fct_sinais_mercado salva com sucesso!
+2026-10-31 12:47:54 - pipeline.pipeline - INFO - Salvando a tabela fct_inclinacao_curva...
+2026-10-31 12:47:59 - pipeline.pipeline - INFO - Tabela fct_inclinacao_curva salva com sucesso!
+2026-10-31 12:47:59 - pipeline.pipeline - INFO - Pipeline concluído com sucesso! Duração: 91.07s.
+2026-10-31 12:47:59 - __main__ - INFO - Pipeline finalizado com sucesso!
+2026-11-03 15:25:06 - config.settings - INFO - Logging configurado com sucesso via YAML.
+2026-11-03 15:25:06 - __main__ - INFO - Iniciando o job: Analise Titulos Tesouro Direto
+2026-11-03 15:25:06 - pipeline.pipeline - INFO - Pipeline iniciado...
+2026-11-03 15:25:17 - pyspark.sql.connect.logging - WARNING - Effective usage policy for this session is cct.Chlub3RlYm9va3MvOTU3MjcxMzIyOTIwMjkzEAEgATIkMDFhMWEyMDMtNmU0MS03YzZiLWE1NDUtN2NlM2NjMjJjNjAzOiRhNmMyNjY4My02NGI4LTM3ZjQtODE2Zi1jMGVlNzUyZjhmZjhKCwjI+afXBhDAhMZ6UAFYAWABaP7YnsCWxaMNiAEA.
+2026-11-03 15:25:17 - pyspark.sql.connect.logging - WARNING - Effective usage policy for this session is cct.Chlub3RlYm9va3MvOTU3MjcxMzIyOTIwMjkzEAEgATIkMDFhMWEyMDMtNmU0MS03YzZiLWE1NDUtN2NlM2NjMjJjNjAzOiRhNmMyNjY4My02NGI4LTM3ZjQtODE2Zi1jMGVlNzUyZjhmZjhKCwjI+afXBhDAhMZ6UAFYAWABaP7YnsCWxaMNiAEA.
+2026-11-03 15:25:27 - pipeline.pipeline - INFO - 
+            Paths obtidos e schemas validados:
+            bronze =  /Volumes/tesouro_transparente_pipeline/bronze/raw_data
+            silver =  `tesouro_transparente_pipeline`.`silver`
+            gold   =  `tesouro_transparente_pipeline`.`gold`
+            
+2026-11-03 15:25:27 - pipeline.pipeline - INFO - Iniciando validação de ambiente da camada bronze no caminho /Volumes/tesouro_transparente_pipeline/bronze/raw_data
+2026-11-03 15:25:28 - io_utils.validator - INFO - [Pre-Flight Check] Volume validado com sucesso. Arquivos detectados: 21
+2026-11-03 15:25:28 - pipeline.pipeline - INFO - Camada bronze validada com sucesso!
+2026-11-03 15:25:28 - pipeline.pipeline - INFO - Lendo dados Parquet de: /Volumes/tesouro_transparente_pipeline/bronze/raw_data
+2026-11-03 15:25:33 - pipeline.pipeline - INFO - Dados da camada bronze lidos com sucesso do caminho /Volumes/tesouro_transparente_pipeline/bronze/raw_data
+2026-11-03 15:25:37 - pipeline.pipeline - INFO - Data Quality: {'total_registros': 178072, 'taxas_fora_range': 5115, 'pu_negativo': 0, 'data_base_futura': 0, 'nulos_campos_criticos': 0, 'duplicatas': 0}
+2026-11-03 15:25:37 - pipeline.pipeline - INFO - Salvando a tabela tesouro_transparente_silver...
+2026-11-03 15:25:47 - pipeline.pipeline - INFO - Tabela tesouro_transparente_silver salva com sucesso!
+2026-11-03 15:25:47 - pipeline.pipeline - INFO - Salvando a tabela dim_titulo...
+2026-11-03 15:25:51 - pipeline.pipeline - INFO - Tabela dim_titulo salva com sucesso!
+2026-11-03 15:25:51 - pipeline.pipeline - INFO - Salvando a tabela fct_precos_taxas...
+2026-11-03 15:25:56 - pipeline.pipeline - INFO - Tabela fct_precos_taxas salva com sucesso!
+2026-11-03 15:25:56 - pipeline.pipeline - INFO - Salvando a tabela stg_zero_cupom...
+2026-11-03 15:26:01 - pipeline.pipeline - INFO - Tabela stg_zero_cupom salva com sucesso!
+2026-11-03 15:26:04 - pipeline.pipeline - INFO - Salvando a tabela dim_data...
+2026-11-03 15:26:08 - pipeline.pipeline - INFO - Tabela dim_data salva com sucesso!
+2026-11-03 15:26:08 - pipeline.pipeline - INFO - Salvando a tabela fct_curva_juros_vertices...
+2026-11-03 15:26:13 - pipeline.pipeline - INFO - Tabela fct_curva_juros_vertices salva com sucesso!
+2026-11-03 15:26:13 - pipeline.pipeline - INFO - Salvando tabela fct_inflacao_implicita...
+2026-11-03 15:26:18 - pipeline.pipeline - INFO - Tabela fct_inflacao_implicita salva com sucesso!
+2026-11-03 15:26:18 - pipeline.pipeline - INFO - Salvando a tabela fct_risco_titulo...
+2026-11-03 15:26:22 - pipeline.pipeline - INFO - Tabela fct_risco_titulo salva com sucesso!
+2026-11-03 15:26:22 - pipeline.pipeline - INFO - Salvando a tabela fct_sinais_mercado...
+2026-11-03 15:26:33 - pipeline.pipeline - INFO - Tabela fct_sinais_mercado salva com sucesso!
+2026-11-03 15:26:33 - pipeline.pipeline - INFO - Salvando a tabela fct_inclinacao_curva...
+2026-11-03 15:26:38 - pipeline.pipeline - INFO - Tabela fct_inclinacao_curva salva com sucesso!
+2026-11-03 15:26:38 - pipeline.pipeline - INFO - Camada gold construída e persistida com sucesso!
+2026-11-03 15:26:38 - pipeline.pipeline - INFO - Pipeline concluído com sucesso! Duração: 91.64s.
+2026-11-03 15:26:38 - __main__ - INFO - Pipeline finalizado.

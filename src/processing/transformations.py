@@ -12,7 +12,7 @@ class Transformation:
     """
 
     def transform_silver(self, df: DataFrame) -> DataFrame:
-        """Padroniza o esquema da camada Silver: renomeia colunas para snake_case e faz o cast de datas string para o tipo date."""
+        """Padroniza o esquema da camada Silver: renomeia colunas para snake_case e faz o cast de datas string para o tipo date. Garante a unicidade da chave primária composta da cotação diária, eliminando registros duplicados para um mesmo título em uma mesma data base."""
 
         de_para_colunas = {
             "Tipo Titulo": "tipo_titulo",
@@ -29,6 +29,7 @@ class Transformation:
             df.withColumnsRenamed(de_para_colunas)
             .withColumn("data_vencimento", F.to_date("data_vencimento", "dd/MM/yyyy"))
             .withColumn("data_base", F.to_date("data_base", "dd/MM/yyyy"))
+            .dropDuplicates(['tipo_titulo', 'data_vencimento', 'data_base'])
         )
 
     def create_dim_titulo(self, df: DataFrame) -> DataFrame:
@@ -465,55 +466,3 @@ class Transformation:
             )
             .withColumn("flag_curva_invertida_2s5s", F.col("inclinacao_2s5s_bps") < 0)
         )
-
-    def validate_data_quality(self, df: DataFrame) -> dict:
-        """Executa validações de qualidade de dados sobre a camada silver e retorna um dicionário com as métricas coletadas: total de registros, taxas fora do range esperado (0%-30%), PUs negativos, datas base futuras, nulos em campos críticos e duplicatas por título e data."""
-        metricas = df.agg(
-            F.count(F.lit(1)).alias("total_registros"),
-            F.sum(
-                F.when(
-                    (F.col("taxa_compra_manha") < 0)
-                    | (F.col("taxa_compra_manha") > 30)
-                    | (F.col("taxa_venda_manha") < 0)
-                    | (F.col("taxa_venda_manha") > 30),
-                    F.lit(1),
-                ).otherwise(F.lit(0))
-            ).alias("taxas_fora_range"),
-            F.sum(
-                F.when(
-                    (F.col("pu_compra_manha") < 0)
-                    | (F.col("pu_venda_manha") < 0)
-                    | (F.col("pu_base_manha") < 0),
-                    F.lit(1),
-                ).otherwise(F.lit(0))
-            ).alias("pu_negativo"),
-            F.sum(
-                F.when(F.col("data_base") > F.current_date(), F.lit(1)).otherwise(
-                    F.lit(0)
-                )
-            ).alias("data_base_futura"),
-            F.sum(
-                F.when(
-                    F.col("tipo_titulo").isNull()
-                    | F.col("data_base").isNull()
-                    | F.col("data_vencimento").isNull(),
-                    F.lit(1),
-                ).otherwise(F.lit(0))
-            ).alias("nulos_campos_criticos"),
-        ).collect()[0]
-
-        duplicatas = (
-            df.groupBy("tipo_titulo", "data_vencimento", "data_base")
-            .agg(F.count(F.lit(1)).alias("cnt"))
-            .filter(F.col("cnt") > 1)
-            .count()
-        )
-
-        return {
-            "total_registros": metricas["total_registros"],
-            "taxas_fora_range": metricas["taxas_fora_range"],
-            "pu_negativo": metricas["pu_negativo"],
-            "data_base_futura": metricas["data_base_futura"],
-            "nulos_campos_criticos": metricas["nulos_campos_criticos"],
-            "duplicatas": duplicatas,
-        }

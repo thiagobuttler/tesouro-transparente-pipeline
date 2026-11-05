@@ -13,8 +13,8 @@ def lambda_handler(event, context):
 
     try:
 
-        # Captura o momentoe exato de extração do arquivo csv
-        timestamp_extraction = datetime.now().strftime("%Y%m%d_%H%M%S")
+        # Captura o momento exato de extração do arquivo csv
+        timestamp_extraction = datetime.now().strftime("%Y-%m-%d")
 
         # Define o modelo de nome do arquivo csv
         file_name = f"taxapreco_raw_{timestamp_extraction}.parquet"
